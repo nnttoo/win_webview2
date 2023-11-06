@@ -10,31 +10,101 @@ if (arc == "x64") {
     libFilePath = "./bin/x64/";
 }
 
-console.log(libFilePath); 
 libFilePath = path.join(__dirname, libFilePath);
 
-const mainDllPath =  path.join(libFilePath, "win_webview2_lib.dll");
+const mainDllPath = path.join(libFilePath, "win_webview2_lib.dll");
 const webviewDllPath = path.join(libFilePath, "WebView2Loader.dll");
 
 ffi.Library(webviewDllPath);
 
-console.log(libFilePath);
 
-var callback = ffi.Callback('void', ['string'],(g)=>{
-    console.log("ini dari c++ " + g);
-})
 
+ 
 module.exports = {
-    openWebview: () => { 
+
+    
+    /**
+     * @typedef SimpleFFIcallback
+     * 
+     * @param {(string : str)=>void} jscallback 
+     * @return {SimpleFFIcallback}
+     */
+    createFFIcallback : (jscallback)=>{
+        return ffi.Callback('void', ['string'], (g) => {
+            jscallback(g);
+        })
+    },
+
+
+    // void OpenWebview(
+    //     const char* url,
+    //     int width,
+    //     int height,
+    //     bool maximize,
+    //     bool kiosk,
+    //     const char* title,
+    //     const char* windowclassname,
+    //     const char* windowParentclassname,
+    //     CallbackType cb
+
+    // ) 
+
+    /**
+     * @typedef OpenWebviewProp
+     * @property {string} url
+     * @property {int} width
+     * @property {int} height
+     * @property {bool} maximize
+     * @property {bool} kiosk
+     * @property {string} title
+     * @property {string} windowclassname
+     * @property {string} windowParentclassname
+     * @property {SimpleFFIcallback} ffiCallback
+     * @property {(string : str)=>void} callback
+     * 
+     * @param {OpenWebviewProp} prop 
+     */
+    openWebview: (prop) => {
         var libm = ffi.Library(mainDllPath, {
-            'OpenWebview': ['int', [ 'string', 'pointer']]
+            'OpenWebview': ['void',
+                [
+                    'string', //url 
+                    'int', //width 
+                    'int', // height
+                    'bool', // maximize
+                    'bool', // kiosk
+                    'string', // title.
+                    'string', // windowclassname
+                    'string', // windowParentclassname
+                    'pointer', // CallbackType
+                ]]
         });
 
-        libm.OpenWebview.async("https://oriindonesia.com", callback,(e,res)=>{
-            console.log(e);
-            console.log(res);
+        return new Promise((r,x)=>{
+            libm.OpenWebview.async(
+                prop.url,
+                prop.width,
+                prop.height,
+                prop.maximize,
+                prop.kiosk,
+                prop.title,
+                prop.windowclassname,
+                prop.windowParentclassname,
+    
+                prop.ffiCallback, 
+                (e, res) => {
+                    if(e){
+                        x(e);
+                    } else {
+                        r(res);
+                    }
+                }
+    
+            )
         })
- 
+
+        
+
 
     }
 }

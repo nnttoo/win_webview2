@@ -6,19 +6,45 @@
 #include <locale>
 #include <codecvt>
 #include "openWebview2.h"
+#include "toolsString.h"
 
-std::wstring convertString(char* c) {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::wstring wideString = converter.from_bytes(c);
-    return wideString;
-}
+#include <iostream>
 
-extern "C" MYLIBRARY_API int OpenWebview( char* url, CallbackType cb) {
+
+
+
+
+extern "C" MYLIBRARY_API void OpenWebview(const char* url,
+    int width,
+    int height,
+    bool maximize,
+    bool kiosk,
+    const char* title,
+    const char* windowclassname,
+    const char* windowParentclassname,
+    CallbackType cb
+
+) {
 
     HMODULE hInst = GetModuleHandle(L"win_webview2_lib.dll"); 
-    cb(const_cast<char*>( "ini skadar nyobain ya masbro"));
-    openWebview2(hInst, convertString(url));
 
-    return 0;
+    std::wstring apppath = GetAppDataPath();
+    cb(ConvertWStringToUTF8(apppath));
+
+    WebViewConfig config;
+    config.width = width;
+    config.height = height;
+    config.title = ConvertCharPtrToWString(title);
+    config.url = ConvertCharPtrToWString(url);
+
+
+
+    config.modewindow = (kiosk)? WS_POPUP : WS_OVERLAPPEDWINDOW;
+    config.maximized = (maximize)? SW_MAXIMIZE : SW_NORMAL;
+
+    std::cout<< ConvertWStringToUTF8(config.url) << std::endl;
+
+    openWebview2(hInst, config);
+     
 }
 

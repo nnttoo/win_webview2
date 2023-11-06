@@ -17,5 +17,14 @@
 #define MYLIBRARY_API __declspec(dllimport)
 #endif
 
-typedef void (*CallbackType)(char* s);
-extern "C" MYLIBRARY_API int OpenWebview(char* url, CallbackType cb);
+typedef void (*CallbackType)(const char* s);
+extern "C" MYLIBRARY_API void OpenWebview(
+	const char* url,
+	int width,
+	int height,
+	bool maximize,
+	bool kiosk,
+	const char* title,
+	const char* windowclassname,
+	const char* windowParentclassname,
+	CallbackType cb);

@@ -11,6 +11,7 @@
 // <IncludeHeader>
 // include WebView2 header
 #include "WebView2.h"
+#include "toolsString.h"
 
 
 #include "resource.h" 
@@ -29,6 +30,7 @@ struct WebViewConfig
 	int modewindow;
 	int maximized;
 	std::wstring title;
+	std::wstring windowclassname;
 };
 
 void realOpenWebview2(
@@ -38,7 +40,7 @@ void realOpenWebview2(
 {
 
 
-	std::wstring m_userDataFolder = L"C:\\Users\\anto\\Downloads\\cobadeno\\rrrrrrrrr";
+	std::wstring m_userDataFolder = GetAppDataPath();
 
 	HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(
 		nullptr,
@@ -76,6 +78,7 @@ void realOpenWebview2(
 
 						// Schedule an async task to navigate to Bing
 						webview->Navigate(config.url.c_str());
+						webview->OpenDevToolsWindow();
 
 						// <NavigationEvents>
 						// Step 4 - Navigation events
@@ -124,14 +127,14 @@ void realOpenWebview2(
 void openWebview2(
 
 	HINSTANCE hInstance,
-	std::wstring urlIn
+	WebViewConfig webcongif
 
 ) {
 	WNDCLASSEX wcex;
 	HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
 
-	std::wstring classname = L"mywindowsClassName";
+	std::wstring classname = webcongif.windowclassname;
 	std::wstring wndClassnme = (classname != L"") ? classname : L"mywindowsClassName";
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -162,14 +165,16 @@ void openWebview2(
 
 	std::cout << "mulai membuka windows" << std::endl;
 	std::wstring r;
+	 
+	if (webcongif.modewindow == 0) {
 
-	WebViewConfig config;
-	config.width = 2000;
-	config.height = 600;
-	config.url = urlIn;
-	config.modewindow = WS_OVERLAPPEDWINDOW;
-	config.maximized = SW_NORMAL;
-	config.title = L"auto";
+		webcongif.modewindow = WS_OVERLAPPEDWINDOW;
+	}
+
+	if (webcongif.maximized == 0) {
+
+		webcongif.maximized = SW_NORMAL;
+	}
 
 
 	HINSTANCE hInst;
@@ -177,10 +182,10 @@ void openWebview2(
 	hInst = hInstance;
 	HWND hWnd = CreateWindowW(
 		wndClassnme.c_str(),
-		config.title.c_str(),
-		config.modewindow,
+		webcongif.title.c_str(),
+		webcongif.modewindow,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		config.width, config.height,
+		webcongif.width, webcongif.height,
 		NULL,
 		NULL,
 		hInst,
@@ -197,13 +202,13 @@ void openWebview2(
 		return;
 	}
 
-	ShowWindow(hWnd, config.maximized);
+	ShowWindow(hWnd, webcongif.maximized);
 	UpdateWindow(hWnd);
 
 	realOpenWebview2(
 		hWnd,
 		hInst,
-		config
+		webcongif
 	);
 
 	// Main message loop:

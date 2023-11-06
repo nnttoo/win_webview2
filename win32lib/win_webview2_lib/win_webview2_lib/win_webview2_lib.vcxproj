@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="toolsString.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="openWebview2.h" />
     <ClInclude Include="resource.h" />
