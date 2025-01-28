@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <windows.h>
 #include <stdlib.h>
@@ -7,45 +7,38 @@
 #include <wrl.h>
 #include <wil/com.h> 
 #include <sstream>
-#include <iostream>
 // <IncludeHeader>
 // include WebView2 header
 #include "WebView2.h"
-#include "toolsString.h"
 
 
-#include "resource.h" 
+#include "resource.h"
+#include "tools.h"
+#include "argtools.h"
+ 
 
-
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-static wil::com_ptr<ICoreWebView2Controller> webviewController;
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);  
+static wil::com_ptr<ICoreWebView2Controller> webviewController; 
 static wil::com_ptr<ICoreWebView2> webview;
 
 
 struct WebViewConfig
 {
 	int width;
-	int height;
+	int height; 
 	std::wstring url;
 	int modewindow;
 	int maximized;
 	std::wstring title;
-	std::wstring windowclassname;
 };
 
 void realOpenWebview2(
 	HWND hWnd,
-	HINSTANCE hInstance,
+	HINSTANCE hInstance,  
 	WebViewConfig config)
-{
-
-
-	std::wstring m_userDataFolder = GetAppDataPath();
-
-	HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(
-		nullptr,
-		m_userDataFolder.c_str(),
-		nullptr,
+{  
+	 
+	CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr,
 		Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
 			[hWnd, config](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
 
@@ -57,7 +50,6 @@ void realOpenWebview2(
 							webviewController->get_CoreWebView2(&webview);
 						}
 
-
 						// Add a few settings for the webview
 						// The demo step is redundant since the values are the default settings
 						wil::com_ptr<ICoreWebView2Settings> settings;
@@ -67,7 +59,6 @@ void realOpenWebview2(
 						settings->put_IsWebMessageEnabled(TRUE);
 						settings->put_AreDevToolsEnabled(FALSE);
 						settings->put_AreDefaultContextMenusEnabled(FALSE);
-
 						// Resize WebView to fit the bounds of the parent window
 						RECT bounds;
 						GetClientRect(hWnd, &bounds);
@@ -78,7 +69,6 @@ void realOpenWebview2(
 
 						// Schedule an async task to navigate to Bing
 						webview->Navigate(config.url.c_str());
-						webview->OpenDevToolsWindow();
 
 						// <NavigationEvents>
 						// Step 4 - Navigation events
@@ -86,7 +76,7 @@ void realOpenWebview2(
 						EventRegistrationToken token;
 						webview->add_NavigationStarting(Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
 							[](ICoreWebView2* webview, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
-
+								 
 								/*
 								wil::unique_cotaskmem_string uri;
 								args->get_Uri(&uri);
@@ -116,25 +106,30 @@ void realOpenWebview2(
 									return S_OK;
 								}).Get(), &token);
 						}
-
+						
 
 						return S_OK;
 					}).Get());
 				return S_OK;
-			}).Get());
+			}).Get()); 
+}
+
+HICON LoadIconFromFile(const std::wstring& filePath) {
+	return (HICON)LoadImage(NULL, filePath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
 }
 
 void openWebview2(
 
 	HINSTANCE hInstance,
-	WebViewConfig webcongif
+	ArgMap argmap
 
 ) {
 	WNDCLASSEX wcex;
-	HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+
+	HICON hIcon = LoadIconFromFile(L"icon.ico");
 
 
-	std::wstring classname = webcongif.windowclassname;
+	std::wstring classname = argmap.getVal(L"wndClassName");
 	std::wstring wndClassnme = (classname != L"") ? classname : L"mywindowsClassName";
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -160,35 +155,33 @@ void openWebview2(
 			_T("Windows Desktop Guided Tour"),
 			NULL);
 
-		return;
+		return ;
 	}
 
 	std::cout << "mulai membuka windows" << std::endl;
 	std::wstring r;
+
+	WebViewConfig config;
+	config.width = ((r = argmap.getVal(L"width")) != L"")? std::stoi(r) : 800;
+	config.height = ((r = argmap.getVal(L"height")) != L"") ? std::stoi(r) : 600; 
+	config.url = ((r = argmap.getVal(L"url")) != L"") ? r : L"https://github.com/nnttoo/cmd_webview2";
+	config.modewindow = ((r = argmap.getVal(L"kiosk")) != L"") ? WS_POPUP : WS_OVERLAPPEDWINDOW;
+	config.maximized = ((r = argmap.getVal(L"maximize")) != L"") ? SW_MAXIMIZE : SW_NORMAL;
+	config.title = ((r = argmap.getVal(L"title")) != L"") ? r : L"auto";
 	 
-	if (webcongif.modewindow == 0) {
 
-		webcongif.modewindow = WS_OVERLAPPEDWINDOW;
-	}
-
-	if (webcongif.maximized == 0) {
-
-		webcongif.maximized = SW_NORMAL;
-	}
-
-
-	HINSTANCE hInst;
+	HINSTANCE hInst; 
 	// Store instance handle in our global variable
 	hInst = hInstance;
 	HWND hWnd = CreateWindowW(
 		wndClassnme.c_str(),
-		webcongif.title.c_str(),
-		webcongif.modewindow,
+		config.title.c_str(),
+		config.modewindow,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		webcongif.width, webcongif.height,
+		config.width, config.height,
 		NULL,
 		NULL,
-		hInst,
+		hInstance,
 		NULL
 	);
 
@@ -201,14 +194,14 @@ void openWebview2(
 
 		return;
 	}
-
-	ShowWindow(hWnd, webcongif.maximized);
+	 
+	ShowWindow(hWnd, config.maximized);
 	UpdateWindow(hWnd);
 
 	realOpenWebview2(
 		hWnd,
 		hInst,
-		webcongif
+		config
 	);
 
 	// Main message loop:
