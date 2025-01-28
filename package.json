@@ -1,0 +1,14 @@
+{
+  "name": "win_webview2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "runDemo": "./sh_run_demo.sh"
+  },
+  "author": "",
+  "license": "ISC"
+}

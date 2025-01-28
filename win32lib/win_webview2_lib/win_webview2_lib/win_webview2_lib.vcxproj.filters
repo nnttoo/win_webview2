@@ -42,8 +42,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\cmd_webview2\win32\icon\favicon_io (2)\favicon.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
   </ItemGroup>
 </Project>

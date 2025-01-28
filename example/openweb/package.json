@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "node ./index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "win_webview2_node": "file:../../win_webview2_node"
+    "win_webview2_node": "file:../../win_webview2_node",
+     "ffi-napi": "^4.0.3"
   }
 }

@@ -6,10 +6,8 @@
 #include <locale>
 #include <codecvt>
 #include "openWebview2.h"
-#include "toolsString.h"
-
-#include <iostream>
-
+#include "toolsString.h"  
+#include <iostream>  
 
 
 
@@ -47,4 +45,3 @@ extern "C" MYLIBRARY_API void OpenWebview(const char* url,
     openWebview2(hInst, config);
      
 }
-
