@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build_node": "node ./builder.mjs",
-    "ww2_builder": "ww2_builder"
+    "win_webview2": "win_webview2"
   },
   "author": "",
   "license": "ISC",

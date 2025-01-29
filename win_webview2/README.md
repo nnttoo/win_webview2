@@ -8,7 +8,7 @@ Win Webview2 is a GUI toolkit for building desktop applications with Node.js. It
 Run the following command:  
 
 ```sh
-npx ww2_builder
+npx win_webview2
 ```  
 
 A menu will appear in the terminal with the following options:  
