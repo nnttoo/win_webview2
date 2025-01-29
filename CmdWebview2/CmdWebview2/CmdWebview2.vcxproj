@@ -141,7 +141,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)\bin\$(Configuration)\$(Platform)</OutDir>
+    <OutDir>..\..\win_webview2_node\win_lib\$(Configuration)\$(Platform)</OutDir>
     <IntDir>$(SolutionDir)\obj\$(Configuration)\$(Platform)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='cobadeh|Win32'">
@@ -154,7 +154,7 @@
     <OutDir>$(SolutionDir)\bin\$(Configuration)\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)\bin\$(Configuration)\$(Platform)</OutDir>
+    <OutDir>..\..\win_webview2_node\win_lib\$(Configuration)\$(Platform)</OutDir>
     <IntDir>$(SolutionDir)\obj\$(Configuration)\$(Platform)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -165,7 +165,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -245,11 +245,19 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='cobalagi|x64'">
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\index.bat">
+    <CopyFileToFolders Include="..\index.conf">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include=".gitignore">
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <None Include="packages.config" />
@@ -257,7 +265,11 @@
   <ItemGroup>
     <ClInclude Include="argtools.h" />
     <ClInclude Include="execbatfile.h" />
+    <ClInclude Include="filereader.h" />
     <ClInclude Include="hideconsole.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="json_helper.h" />
+    <ClInclude Include="logtools.h" />
     <ClInclude Include="openFolderDialog.h" />
     <ClInclude Include="openWebview2.h" />
     <ClInclude Include="resource.h" />

@@ -13,8 +13,12 @@
 
 
 #include "resource.h"
+#include "tools.h" 
+#include "json.hpp"
+#include "json_helper.h"
 #include "tools.h"
-#include "argtools.h"
+
+using json = nlohmann::json;
  
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);  
@@ -24,13 +28,14 @@ static wil::com_ptr<ICoreWebView2> webview;
 
 struct WebViewConfig
 {
-	int width;
-	int height; 
-	std::wstring url;
-	int modewindow;
-	int maximized;
-	std::wstring title;
+	int width = 800;
+	int height = 400; 
+	std::wstring url = L"";
+	int modewindow = WS_OVERLAPPEDWINDOW;
+	int maximized = SW_NORMAL;
+	std::wstring title = L"auto";
 };
+
 
 void realOpenWebview2(
 	HWND hWnd,
@@ -116,22 +121,28 @@ void realOpenWebview2(
 
 HICON LoadIconFromFile(const std::wstring& filePath) {
 	return (HICON)LoadImage(NULL, filePath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
-}
+} 
 
-void openWebview2(
+void openWebview2JSON(
 
 	HINSTANCE hInstance,
-	ArgMap argmap
+	json jsonIn
 
 ) {
+
+	WebViewConfig config;
+	config.width = JsonGetInt(jsonIn, "width", 800);
+	config.height = JsonGetInt(jsonIn, "height", 600);
+	config.url = JsonGetString(jsonIn, "url", L"https://github.com/nnttoo/cmd_webview2");
+	config.modewindow = (JsonGetBool(jsonIn, "kiosk")) ? WS_POPUP : WS_OVERLAPPEDWINDOW; //
+	config.maximized = (JsonGetBool(jsonIn, "maximize")) ? SW_MAXIMIZE : SW_NORMAL; //
+	config.title = JsonGetString(jsonIn, "title", L"auto");
+
+
+	HICON hIcon = LoadIconFromFile(L"icon.ico");  
+
+
 	WNDCLASSEX wcex;
-
-	HICON hIcon = LoadIconFromFile(L"icon.ico");
-
-
-	std::wstring classname = argmap.getVal(L"wndClassName");
-	std::wstring wndClassnme = (classname != L"") ? classname : L"mywindowsClassName";
-
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc = WndProc;
@@ -144,7 +155,7 @@ void openWebview2(
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = NULL;
-	wcex.lpszClassName = wndClassnme.c_str();
+	wcex.lpszClassName = Webview2WNDClassname.c_str();
 	wcex.hIconSm = hIcon;
 
 
@@ -155,26 +166,15 @@ void openWebview2(
 			_T("Windows Desktop Guided Tour"),
 			NULL);
 
-		return ;
+		return;
 	}
 
-	std::cout << "mulai membuka windows" << std::endl;
-	std::wstring r;
-
-	WebViewConfig config;
-	config.width = ((r = argmap.getVal(L"width")) != L"")? std::stoi(r) : 800;
-	config.height = ((r = argmap.getVal(L"height")) != L"") ? std::stoi(r) : 600; 
-	config.url = ((r = argmap.getVal(L"url")) != L"") ? r : L"https://github.com/nnttoo/cmd_webview2";
-	config.modewindow = ((r = argmap.getVal(L"kiosk")) != L"") ? WS_POPUP : WS_OVERLAPPEDWINDOW;
-	config.maximized = ((r = argmap.getVal(L"maximize")) != L"") ? SW_MAXIMIZE : SW_NORMAL;
-	config.title = ((r = argmap.getVal(L"title")) != L"") ? r : L"auto";
-	 
-
-	HINSTANCE hInst; 
+	LogPrintA( "mulai membuka windows") ;  
+	HINSTANCE hInst;
 	// Store instance handle in our global variable
 	hInst = hInstance;
 	HWND hWnd = CreateWindowW(
-		wndClassnme.c_str(),
+		Webview2WNDClassname.c_str(),
 		config.title.c_str(),
 		config.modewindow,
 		CW_USEDEFAULT, CW_USEDEFAULT,
@@ -194,7 +194,7 @@ void openWebview2(
 
 		return;
 	}
-	 
+
 	ShowWindow(hWnd, config.maximized);
 	UpdateWindow(hWnd);
 

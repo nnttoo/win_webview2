@@ -44,6 +44,18 @@
     <ClInclude Include="execbatfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="logtools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filereader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CmdWebview2.rc">
@@ -54,7 +66,10 @@
     <CopyFileToFolders Include="..\icon.ico">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="..\index.bat">
+    <CopyFileToFolders Include="..\index.conf">
+      <Filter>Source Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include=".gitignore">
       <Filter>Source Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>

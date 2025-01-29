@@ -19,24 +19,26 @@
 #include "openWebview2.h"
 #include "openFolderDialog.h" 
 #include "execbatfile.h"
+#include "logtools.h" 
 
- 
 
-int CALLBACK WinMain(
+int WINAPI   WinMain(
 	_In_ HINSTANCE hInstance,
-	_In_ HINSTANCE hPrevInstance,
-	_In_ LPSTR     lpCmdLine,
-	_In_ int       nCmdShow
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_  int nCmdShow
 )
 {  
-	ArgMap arg = ArgMap::parse(lpCmdLine);  
-	std::wstring url = arg.getVal(L"url");
-	std::cout << "ini url" << std::endl;
-	std::wcout << url << std::endl;
+	ExecBatFile::runBatFile(hInstance);
+
+	 
+	/*ArgMap arg = ArgMap::parse(lpCmdLine);  
+	std::wstring url = arg.getVal(L"url"); 
+
+	LogPrint(url);
 
 
-	std::wstring fun = arg.getVal(L"fun"); 
-	std::wcout << L"ciooooooooo"<< fun << std::endl; 
+	std::wstring fun = arg.getVal(L"fun");  
 
 	if (fun == L"openwebview") {
 		openWebview2(hInstance,arg);
@@ -51,7 +53,7 @@ int CALLBACK WinMain(
 	}
 	else {
 		runBatFile();
-	}
+	}*/
 		 
 	return 0;
 } 

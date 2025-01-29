@@ -2,6 +2,12 @@
 #include <windows.h>
 #include <string>
 #include <sstream>
+#include <iostream>
+#include <fstream> 
+#include "logtools.h"
+
+const std::wstring Webview2WNDClassname = L"Webview2WindowName";
+
 std::string DecodeURIComponent(const std::string& encodedStr) {
 	std::string decodedStr;
 
@@ -129,4 +135,39 @@ std::vector<std::string> ParseArguments(LPSTR lpCmdLine)
 	}
 
 	return arguments;
+}
+
+bool startsWith(const std::string& str, const std::string& prefix) {
+	if (str.length() < prefix.length()) {
+		return false;
+	}
+	return str.substr(0, prefix.length()).compare(prefix) == 0;
+}
+
+bool startsWithW(const std::wstring& str, const std::wstring& prefix) {
+	if (prefix.size() > str.size()) {
+		return false;
+	}
+	return std::equal(prefix.begin(), prefix.end(), str.begin());
+}
+
+std::wstring replaceString(  std::wstring str,  std::wstring toReplace,  std::wstring replacement) {
+	std::wstring result = str;  // Salin string asli
+	size_t pos = 0;
+	while ((pos = result.find(toReplace, pos)) != std::wstring::npos) {
+		result.replace(pos, toReplace.length(), replacement);
+		pos += replacement.length();  // Pindahkan posisi ke setelah penggantian
+	}
+	return result;  // Kembalikan hasil modifikasi
+}
+
+std::string wstringToString(const std::wstring& wstr) {
+	// Tentukan panjang buffer yang diperlukan untuk hasil konversi
+	int len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+	if (len == 0) { 
+		return "";
+	} 
+	std::string str(len, '\0');  // Membuat string dengan panjang yang sesuai 
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], len, nullptr, nullptr); 
+	return str;
 }

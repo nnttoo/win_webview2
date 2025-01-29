@@ -2,43 +2,52 @@
 
 
 #include <windows.h> 
-#include "argtools.h"
 #include "tools.h" 
 #include <shlobj.h>
 
+#include "json_helper.h"
+
+std::wstring replacePipeWithNull(const std::wstring& str) {
+    std::wstring result = str;  // Salin string asli
+    for (size_t i = 0; i < result.length(); ++i) {
+        if (result[i] == L'|') {
+            result[i] = L'\0';  // Ganti '|' dengan karakter null
+        }
+    }
+    return result;
+}
+
 std::wstring openFileDialog(
-    ArgMap argmap
+    nlohmann::json argJson
 
 ) {
+
+    LogPrintA("membuka file dialog");
+
     std::wstring result;
     // Inisialisasi dialog
-    OPENFILENAME ofn;
-    TCHAR szFile[260] = { 0 }; 
-
-    std::wstring filter = argmap.getVal(L"filter");
-    std::wstring wfilter = L"All Files (*.*)\0*.*\0"; 
-    std::vector<std::wstring> split = SplitStringW(filter, '|');
-
-    if (split.size() > 0) {
-        wfilter = split[0];
-        wfilter += L"\0";
-        wfilter += split[1];
-        wfilter += L"\0";
-    }
-
-      
      
+    std::wstring wfilter = L"All File|*.*||";
+    wfilter = JsonGetString(argJson, "filter", wfilter);
+    wfilter = replacePipeWithNull(wfilter );
+
+
+    LogPrint(wfilter);
+
+    LogPrintA("membuka file dialog");
     
     /*
     Find window owner by class name
-    */
-    std::wstring classname = argmap.getVal(L"wndClassName");
-    std::wstring wndClassnme = (classname != L"")? classname : L"mywindowsClassName"; 
-    HWND hWndOwner = FindWindowW(wndClassnme.c_str(), NULL);
+    */  
+    HWND hWndOwner = FindWindowW(Webview2WNDClassname.c_str(), NULL);
 
+    TCHAR szFile[260] = { 0 };
+
+    OPENFILENAME ofn;
     ZeroMemory(&ofn, sizeof(ofn));
+
     ofn.lStructSize = sizeof(ofn);
-    ofn.hwndOwner = hWndOwner;
+    ofn.hwndOwner = NULL;
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = sizeof(szFile);
     ofn.lpstrFilter = wfilter.c_str();
@@ -59,16 +68,12 @@ std::wstring openFileDialog(
 
 }
 
-std::wstring openDirDialog(
-    ArgMap argmap
-) {
+std::wstring openDirDialog() {
     BROWSEINFO bi;
     TCHAR szDir[MAX_PATH];
 
-
-    std::wstring classname = argmap.getVal(L"wndClassName");
-    std::wstring wndClassnme = (classname != L"") ? classname : L"mywindowsClassName";
-    HWND hWndOwner = FindWindowW(wndClassnme.c_str(), NULL);
+      
+    HWND hWndOwner = FindWindowW(Webview2WNDClassname.c_str(), NULL);
 
     ZeroMemory(&bi, sizeof(bi));
     bi.hwndOwner = hWndOwner;

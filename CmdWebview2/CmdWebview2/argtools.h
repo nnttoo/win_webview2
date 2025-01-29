@@ -5,14 +5,11 @@
 #include <sstream> 
 #include "tools.h"
 #include <map>
- 
- 
-bool startsWith(const std::string& str, const std::string& prefix) {
-	if (str.length() < prefix.length()) {
-		return false;
-	}
-	return str.substr(0, prefix.length()).compare(prefix) == 0;
-}
+
+
+
+
+
 class ArgMap
 {
 	std::map<std::wstring, std::wstring> mapArg;
