@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "win_webview2_node": "file:../../win_webview2"
+    "win_webview2": "file:../../win_webview2"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

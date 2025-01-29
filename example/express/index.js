@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import  express  from 'express';
 import path  from 'path'; 
 import { Server } from 'http';
-import { openDialogFile, openDialogFolder, openWeb } from "win_webview2_node"
+import { openDialogFile, openDialogFolder, openWeb } from "win_webview2"
  
 function openWebview(address) {
     openWeb({
