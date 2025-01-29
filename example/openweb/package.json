@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "node ./index.js"
+    "run": "node ./index.js",
+    "ww2_builder" : "ww2_builder"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "win_webview2_node": "file:../../win_webview2_node",
-     "ffi-napi": "^4.0.3"
+    "win_webview2_node": "file:../../win_webview2_node" 
   }
 }
