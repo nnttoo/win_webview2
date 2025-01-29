@@ -1,11 +1,13 @@
 {
   "name": "win_webview2_node",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nnttoo/win_webview2"
+  },
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "exports": "./winWebview2.mjs",
   "bin": {
     "ww2_builder": "./ww2_builder.mjs"
   },
@@ -13,6 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "prompts": "^2.4.2",
-    "sharp": "^0.33.5"
+    "rcedit": "^4.0.1",
+    "sharp": "^0.33.5",
+    "sharp-ico": "^0.1.5"
   }
 }

@@ -1,0 +1,21 @@
+{
+  "name": "openweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build_node": "node ./builder.mjs",
+    "ww2_builder": "ww2_builder"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "win_webview2_node": "file:../../win_webview2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "esbuild": "^0.24.2",
+    "fs-extra": "^11.3.0"
+  }
+}
