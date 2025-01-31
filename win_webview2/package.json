@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "prompts": "^2.4.2",
+    "prompts": "^2.4.3",
     "rcedit": "^4.0.1",
     "sharp": "^0.33.5",
     "sharp-ico": "^0.1.5"

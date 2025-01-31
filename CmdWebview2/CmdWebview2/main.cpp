@@ -20,6 +20,7 @@
 #include "openFolderDialog.h" 
 #include "execbatfile.h"
 #include "logtools.h" 
+#include "MyPipe.h"
 
 
 int WINAPI   WinMain(
@@ -28,10 +29,25 @@ int WINAPI   WinMain(
 	_In_ LPSTR lpCmdLine,
 	_In_  int nCmdShow
 )
-{  
+{
+	MyPipe* mypipe = new MyPipe();
+
+	mypipe->isAlive = true;
+
+	std::thread mythread([mypipe] {
+
+		mypipe->createPipeForMain();
+	});
+
+
 	ExecBatFile::runBatFile(hInstance);
 
-	 
+	LogPrintA("setelah exec");
+	mypipe->isAlive = false;
+
+
+	mythread.join();
+	delete mypipe;
 	/*ArgMap arg = ArgMap::parse(lpCmdLine);  
 	std::wstring url = arg.getVal(L"url"); 
 

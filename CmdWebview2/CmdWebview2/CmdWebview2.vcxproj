@@ -141,7 +141,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\win_webview2_node\win_lib\$(Platform)</OutDir>
+    <OutDir>..\..\win_webview2\win_lib\$(Platform)</OutDir>
     <IntDir>$(SolutionDir)\obj\$(Configuration)\$(Platform)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='cobadeh|Win32'">
@@ -154,7 +154,7 @@
     <OutDir>$(SolutionDir)\bin\$(Configuration)\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\win_webview2_node\win_lib\$(Platform)</OutDir>
+    <OutDir>..\..\win_webview2\win_lib\$(Platform)</OutDir>
     <IntDir>$(SolutionDir)\obj\$(Configuration)\$(Platform)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -270,6 +270,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="json_helper.h" />
     <ClInclude Include="logtools.h" />
+    <ClInclude Include="MyPipe.h" />
     <ClInclude Include="openFolderDialog.h" />
     <ClInclude Include="openWebview2.h" />
     <ClInclude Include="resource.h" />

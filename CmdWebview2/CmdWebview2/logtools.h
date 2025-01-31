@@ -8,10 +8,10 @@
 void LogPrint(std::wstring str) {
 
 	std::wcout << str << std::endl;
-	str = str  + L"\n\n";
-	LPCWSTR lpcwstr =str.c_str();
+	str = str + L"\n\n";
+	LPCWSTR lpcwstr = str.c_str();
 	OutputDebugStringW(lpcwstr);
-}
+};
 
 
 void LogPrintA(std::string str) {
@@ -20,4 +20,4 @@ void LogPrintA(std::string str) {
 	str = str + "\n";
 	LPCSTR lpcwstr = str.c_str();
 	OutputDebugStringA(lpcwstr);
-}
+};

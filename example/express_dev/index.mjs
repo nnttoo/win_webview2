@@ -4,6 +4,34 @@ import { fileURLToPath } from 'url';
 import  express  from 'express';
 import path  from 'path'; 
 import { Server } from 'http';
+import net from "net"
+
+function sleep(n = 1000){
+    return new Promise((r,x)=>{
+        setTimeout(r,n);
+    })
+}
+
+async function cobaBukaPipe(){
+    const PIPE_PATH = '\\\\.\\pipe\\MyNamedPipe';
+
+    const client = net.createConnection(PIPE_PATH, () => {
+        console.log('Anak terhubung ke Named Pipe!');
+    });
+    
+    client.on('data', (data) => {
+        console.log('Balasan dari parent:', data.toString());
+    });
+    
+    while(true){
+        await sleep();
+
+        client.write("halo dunia   ");
+    }
+
+}
+
+cobaBukaPipe();
  
 function openWebview(address) {
     openWeb({
