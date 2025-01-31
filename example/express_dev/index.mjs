@@ -23,6 +23,7 @@ function openWebview(address) {
         maximize : false,
         title : "auto",
         url : address, 
+        isDebugMode : false
     }) 
 }
 

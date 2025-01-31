@@ -21,5 +21,8 @@
       "node14-win-x64"
     ],
     "outputPath": "./demo_release"
-  } 
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
 }

@@ -34,6 +34,7 @@ struct WebViewConfig
 	int modewindow = WS_OVERLAPPEDWINDOW;
 	int maximized = SW_NORMAL;
 	std::wstring title = L"auto";
+	bool isDebugMode = false;
 };
 
 
@@ -62,8 +63,10 @@ void realOpenWebview2(
 						settings->put_IsScriptEnabled(TRUE);
 						settings->put_AreDefaultScriptDialogsEnabled(FALSE);
 						settings->put_IsWebMessageEnabled(TRUE);
-						settings->put_AreDevToolsEnabled(FALSE);
-						settings->put_AreDefaultContextMenusEnabled(FALSE);
+
+
+						settings->put_AreDevToolsEnabled(config.isDebugMode);
+						settings->put_AreDefaultContextMenusEnabled(config.isDebugMode);
 						// Resize WebView to fit the bounds of the parent window
 						RECT bounds;
 						GetClientRect(hWnd, &bounds);
@@ -137,6 +140,7 @@ void openWebview2JSON(
 	config.modewindow = (JsonGetBool(jsonIn, "kiosk")) ? WS_POPUP : WS_OVERLAPPEDWINDOW; //
 	config.maximized = (JsonGetBool(jsonIn, "maximize")) ? SW_MAXIMIZE : SW_NORMAL; //
 	config.title = JsonGetString(jsonIn, "title", L"auto");
+	config.isDebugMode = JsonGetBool(jsonIn, "isDebugMode");
 
 
 	HICON hIcon = LoadIconFromFile(L"icon.ico");  

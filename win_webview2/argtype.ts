@@ -7,6 +7,7 @@ export type OpenWebArg = {
     kiosk: boolean 
     maximize: boolean
     title: string 
+    isDebugMode : boolean
 }
 
 export type OpenDialogFileArg = {
