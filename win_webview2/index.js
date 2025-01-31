@@ -22,19 +22,7 @@ ffi.Library(webviewDllPath);
  
 module.exports = {
 
-    
-    /**
-     * @typedef SimpleFFIcallback
-     * 
-     * @param {(string : str)=>void} jscallback 
-     * @return {SimpleFFIcallback}
-     */
-    createFFIcallback : (jscallback)=>{
-        return ffi.Callback('void', ['string'], (g) => {
-            jscallback(g);
-        })
-    },
-
+   
 
     // void OpenWebview(
     //     const char* url,

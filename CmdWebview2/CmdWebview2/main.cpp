@@ -29,18 +29,24 @@ int WINAPI   WinMain(
 	_In_ LPSTR lpCmdLine,
 	_In_  int nCmdShow
 )
-{
+{ 
 	MyPipe* mypipe = new MyPipe();
 
 	mypipe->isAlive = true;
-
-	std::thread mythread([mypipe] {
-
-		mypipe->createPipeForMain();
-	});
+	mypipe->storedHinstane = hInstance;
+	mypipe->setEnvironment();
 
 
-	ExecBatFile::runBatFile(hInstance);
+	ExecBatFile*  execBat = new ExecBatFile(); 
+	mypipe->execBatFile = execBat;
+
+	std::thread mythread([mypipe] { 
+	 	mypipe->createPipeForMain();
+		LogPrintA("Thread Pipe closed");
+	}); 
+
+
+	execBat->runBatFile(hInstance);
 
 	LogPrintA("setelah exec");
 	mypipe->isAlive = false;
@@ -48,6 +54,7 @@ int WINAPI   WinMain(
 
 	mythread.join();
 	delete mypipe;
+	delete execBat;
 	/*ArgMap arg = ArgMap::parse(lpCmdLine);  
 	std::wstring url = arg.getVal(L"url"); 
 

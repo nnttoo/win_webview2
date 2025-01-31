@@ -6,6 +6,8 @@
 #include <fstream> 
 #include "logtools.h"
 
+#include <chrono>
+
 const std::wstring Webview2WNDClassname = L"Webview2WindowName";
 
 std::string DecodeURIComponent(const std::string& encodedStr) {
@@ -170,4 +172,12 @@ std::string wstringToString(const std::wstring& wstr) {
 	std::string str(len, '\0');  // Membuat string dengan panjang yang sesuai 
 	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], len, nullptr, nullptr); 
 	return str;
+}
+
+std::wstring GetMillisecondInstr( ) {
+	auto now = std::chrono::system_clock::now();
+	auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+
+	std::wstring outTimestamp = std::to_wstring(timestamp);
+	return outTimestamp;
 }

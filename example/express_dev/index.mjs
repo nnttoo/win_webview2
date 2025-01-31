@@ -1,5 +1,5 @@
 // @ts-check
-import { openDialogFile, openDialogFolder, openWeb } from './winWebview2.mjs';
+import { openDialogFile, openDialogFolder, openWeb } from 'win_webview2';
 import { fileURLToPath } from 'url';
 import  express  from 'express';
 import path  from 'path'; 
@@ -12,26 +12,8 @@ function sleep(n = 1000){
     })
 }
 
-async function cobaBukaPipe(){
-    const PIPE_PATH = '\\\\.\\pipe\\MyNamedPipe';
 
-    const client = net.createConnection(PIPE_PATH, () => {
-        console.log('Anak terhubung ke Named Pipe!');
-    });
-    
-    client.on('data', (data) => {
-        console.log('Balasan dari parent:', data.toString());
-    });
-    
-    while(true){
-        await sleep();
-
-        client.write("halo dunia   ");
-    }
-
-}
-
-cobaBukaPipe();
+ 
  
 function openWebview(address) {
     openWeb({
