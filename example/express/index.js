@@ -1,10 +1,13 @@
-// @ts-check 
-import { fileURLToPath } from 'url';
+// @ts-check  
 import  express  from 'express';
 import path  from 'path'; 
 import { Server } from 'http';
 import { openDialogFile, openDialogFolder, openWeb } from "win_webview2"
  
+/**
+ * 
+ * @param {string} address 
+ */
 function openWebview(address) {
     openWeb({
         height : 400,

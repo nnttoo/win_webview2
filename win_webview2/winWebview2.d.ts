@@ -15,7 +15,4 @@ export function openDialogFile(arg: OpenDialogFileArg): Promise<string>;
  * Open folder dialog and return selected folder path
  */
 export function openDialogFolder(): Promise<string>;
- 
-export declare class WW2Deploy {
-  static startDeploy(): Promise<void>;
-}
+  
