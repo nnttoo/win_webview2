@@ -115,3 +115,5 @@ export async function openDialogFolder() {
     };
     return waitingResult(obj);
 }
+
+export { WW2Deploy } from "./ww2_builder_deploy.mjs";

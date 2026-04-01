@@ -1,18 +1,13 @@
 {
   "name": "win_webview2",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnttoo/win_webview2"
   },
   "description": "",
-  "main": "index.js",
-  "exports":{
-     ".": {
-      "import": "./winWebview2.mjs",
-      "types": "./winWebview2.d.ts"
-    }
-  },
+  "main": "./winWebview2.mjs", 
+  "types": "./winWebview2.d.ts",
   "bin": {
     "win_webview2": "./ww2_builder.mjs"
   },

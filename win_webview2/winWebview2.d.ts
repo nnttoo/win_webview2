@@ -16,3 +16,6 @@ export function openDialogFile(arg: OpenDialogFileArg): Promise<string>;
  */
 export function openDialogFolder(): Promise<string>;
  
+export declare class WW2Deploy {
+  static startDeploy(): Promise<void>;
+}
