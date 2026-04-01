@@ -1,20 +1,18 @@
-// @ts-check 
-import { fileURLToPath } from 'url';
-import  express  from 'express';
-import path  from 'path'; 
-import { Server } from 'http';
-import { openDialogFile, openDialogFolder, openWeb } from "win_webview2"
- 
-function openWebview(address) {
+import { openDialogFile, openDialogFolder, openWeb } from 'win_webview2';
+import express, {  } from 'express';
+import path from 'node:path';
+import { Server } from 'node:http';
+
+function openWebview(address: string) {
     openWeb({
-        height : 400,
+        height: 400,
         width: 800,
-        kiosk : false,
-        maximize : false,
-        title : "auto",
-        url : address, 
-        isDebugMode : true,
-    }) 
+        kiosk: false,
+        maximize: false,
+        title: "auto",
+        url: address,
+        isDebugMode: false
+    })
 }
 
 function openFileDilog() {
@@ -25,9 +23,7 @@ function openFileDilog() {
 function openFileDilogFolder() {
     return openDialogFolder();
 }
- 
 
-/** @type {import("express").Application} */
 const app   = express();
 const port = 0; // 0 random port
  
@@ -45,9 +41,8 @@ app.get("/openfolderdialog", async (r, x) => {
 
     x.send(filepath)
 })
-
-/** @type {Server} */
-let server ;
+ 
+let server : Server ;
 
 
 

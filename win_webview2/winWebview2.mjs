@@ -1,5 +1,4 @@
-// @ts-check
-
+ 
 import net from "net"
 let isOncloseSetted = false;
 const prefixWebview = "WINWEBVIEW_";
@@ -52,6 +51,8 @@ async function createPipe() {
     let client  = net.createConnection(PIPE_CPLUS_SENDER, () => {
         console.log('Anak terhubung ke Named Pipe!');
     });
+
+     
 
     client.on('data', (buff) => {
         let data = buff.toString(); 

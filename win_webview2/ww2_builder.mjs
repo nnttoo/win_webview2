@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-
-// @ts-check
+ 
 
 import prompts from "prompts";
 import fs from 'fs'
