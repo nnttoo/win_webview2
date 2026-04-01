@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <windows.h>
 #include <stdlib.h>
@@ -17,6 +17,7 @@
 #include "json.hpp"
 #include "json_helper.h"
 #include "tools.h"
+#include <shlobj.h>
 
 using json = nlohmann::json;
  
@@ -37,14 +38,46 @@ struct WebViewConfig
 	bool isDebugMode = false;
 };
 
+std::wstring GetExeName()
+{
+    wchar_t path[MAX_PATH];
+    GetModuleFileNameW(NULL, path, MAX_PATH);
+
+    std::wstring fullPath(path);
+
+    // ambil nama file saja (tanpa folder)
+    size_t pos = fullPath.find_last_of(L"\\/");
+    std::wstring fileName = (pos != std::wstring::npos)
+        ? fullPath.substr(pos + 1)
+        : fullPath;
+
+    return fileName;
+}
 
 void realOpenWebview2(
 	HWND hWnd,
 	HINSTANCE hInstance,  
 	WebViewConfig config)
 {  
-	 
-	CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr,
+
+
+	PWSTR localAppData = nullptr;
+	SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &localAppData);
+
+	std::wstring exeName = GetExeName();
+
+	// contoh: MineDispatch_Simulator.exe → MineDispatch_Simulator
+	size_t dot = exeName.find_last_of(L".");
+	if (dot != std::wstring::npos)
+		exeName = exeName.substr(0, dot);
+
+	std::wstring userDataFolder =
+		std::wstring(localAppData) +
+		L"\\" + exeName + L".WebView2";
+
+	LogPrint(userDataFolder);
+		
+	CreateCoreWebView2EnvironmentWithOptions(nullptr, userDataFolder.c_str(), nullptr,
 		Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
 			[hWnd, config](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
 
