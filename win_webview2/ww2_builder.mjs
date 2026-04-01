@@ -43,6 +43,8 @@ async function askWhitList(msg, list) {
  
 
 async function run() {
+    console.log("v-22");
+
     let p = await askWhitList("menu", [
         "init_webview2",
         "deploy",
