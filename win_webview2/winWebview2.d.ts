@@ -1,4 +1,4 @@
-import { OpenDialogFileArg, OpenWebArg } from "./argtype";
+import { OpenDialogArg, OpenDialogFileArg, OpenWebArg } from "./argtype";
 
  
 /**
@@ -14,5 +14,6 @@ export function openDialogFile(arg: OpenDialogFileArg): Promise<string>;
 /**
  * Open folder dialog and return selected folder path
  */
-export function openDialogFolder(): Promise<string>;
+export function openDialogFolder(arg : OpenDialogArg): Promise<string>;
+export function closeWindowWebView(arg : OpenDialogArg): Promise<string>;
   

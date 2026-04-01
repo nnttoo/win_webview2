@@ -9,7 +9,7 @@ import path from "path";
 import { logPrint } from "./ww2_builder_log.mjs";
 import { fileURLToPath } from 'url';
 import rcedit from "rcedit";
-import  sharpsToIco  from "sharp-ico"
+import sharpsToIco from "sharp-ico"
 
 
 const jsonConfigFilePath = "./win_webview2.json";
@@ -39,7 +39,7 @@ export class WW2Deploy {
             await fs.promises.mkdir(folderDist);
         }
 
-        let libFolder = path.join(folderDist,"lib");
+        let libFolder = path.join(folderDist, "lib");
         if (!fs.existsSync(libFolder)) {
             await fs.promises.mkdir(libFolder);
         }
@@ -64,15 +64,15 @@ export class WW2Deploy {
         const images = await Promise.all(sizes.map(size =>
             sharp(iconPath)
                 .resize(size, size)
-                .toFormat('png') 
+                .toFormat('png')
         ));
 
 
-        await sharpsToIco.sharpsToIco(images, outputIcon); 
+        await sharpsToIco.sharpsToIco(images, outputIcon);
 
         console.log('✅ Berhasil membuat icon.ico yang valid untuk rcedit!');
 
-         
+
     }
 
     async copyExe() {
@@ -86,14 +86,23 @@ export class WW2Deploy {
         logPrint(currentDir);
 
         let inputFileExe = path.join(currentDir, "win_lib", this.platform, "CmdWebview2.exe");
-       
-        let outFileExe = path.join(config.outdir, config.appname + ".exe"); 
-        this.outputExeFile = inputFileExe; 
+
+        let outFileExe = path.join(config.outdir, config.appname + ".exe");
+        this.outputExeFile = inputFileExe;
         await fs.promises.copyFile(inputFileExe, outFileExe);
 
         let inputFileDll = path.join(currentDir, "win_lib", this.platform, "WebView2Loader.dll");
-        let outFileDll = path.join(config.outdir,  "WebView2Loader.dll"); 
+        let outFileDll = path.join(config.outdir, "WebView2Loader.dll");
         await fs.promises.copyFile(inputFileDll, outFileDll);
+
+        await (async () => {
+            let inputFileDll = jsonConfigFilePath;
+            let outFileDll = path.join(config.outdir, "win_webview2.json");
+            await fs.promises.copyFile(inputFileDll, outFileDll);
+
+        })();
+
+
 
         logPrint("copy file success");
     }
@@ -120,25 +129,25 @@ export class WW2Deploy {
         this.configObjec = jsonObj;
     }
 
-    async copyNodeExe(){
-        if(this.configObjec == null) return;
+    async copyNodeExe() {
+        if (this.configObjec == null) return;
         let obj = this.configObjec;
 
         let inputNodeExe = process.execPath;
-        let outNodeExe = path.join(obj.outdir,"lib","node.exe");
+        let outNodeExe = path.join(obj.outdir, "lib", "node.exe");
         await fs.promises.copyFile(inputNodeExe, outNodeExe);
     }
 
-    async createIndexConf(){
-        if(this.configObjec == null) return;
+    async createIndexConf() {
+        if (this.configObjec == null) return;
         let obj = this.configObjec;
 
-        let oututFileConf = path.join(obj.outdir,"index.conf");
+        let oututFileConf = path.join(obj.outdir, "index.bat");
 
-        let configCtn = `./lib/node.exe ./${obj.entry_point}`
-        await fs.promises.writeFile(oututFileConf,configCtn);
+        let configCtn = `.\\\\lib\\\\node.exe ./${obj.entry_point}`
+        await fs.promises.writeFile(oututFileConf, configCtn);
     }
-    
+
     static async initWW2() {
         /** @type {ConfigWW2} */
 

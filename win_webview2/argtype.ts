@@ -8,8 +8,15 @@ export type OpenWebArg = {
     maximize: boolean
     title: string 
     isDebugMode : boolean
+    winClassName : string
 }
 
-export type OpenDialogFileArg = {
+export type OpenDialogFileArg = { 
+    winClassName : string
     filter : string
+}
+
+
+export type OpenDialogArg = { 
+    winClassName : string 
 }

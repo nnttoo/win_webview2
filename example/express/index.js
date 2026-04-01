@@ -2,7 +2,7 @@
 import  express  from 'express';
 import path  from 'path'; 
 import { Server } from 'http';
-import { openDialogFile, openDialogFolder, openWeb } from "win_webview2"
+import {   openDialogFile, openDialogFolder, openWeb } from "win_webview2"
  
 /**
  * 
@@ -17,16 +17,20 @@ function openWebview(address) {
         title : "auto",
         url : address, 
         isDebugMode : true,
+        winClassName : "openWebApp"
     }) 
 }
 
 function openFileDilog() {
     return  openDialogFile({
+        winClassName: "openWebApp",
         filter : "Image Files (jpeg)|*.bmp;*.jpg;*.jpeg;*.png;*.gif||"
     }); 
 }
 function openFileDilogFolder() {
-    return openDialogFolder();
+    return openDialogFolder({
+        winClassName : "openWebApp"
+    });
 }
  
 

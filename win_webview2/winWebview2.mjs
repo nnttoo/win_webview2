@@ -1,12 +1,10 @@
- 
-import net from "net"
-let isOncloseSetted = false;
-const prefixWebview = "WINWEBVIEW_";
-const prefixWebviewResult = "WIN_WEBVIEW2_RESULT";
+//@ts-check
 
-/** @type {string | null} */
-let resultDataFromWebview2 = "";
-let resultInUse = false;
+import { exec, execFile } from "child_process";
+import { readFile } from "fs/promises";
+
+import { arch } from "os";
+const arc = arch();
 
 function sleep(n = 1000) {
     return new Promise((r, x) => {
@@ -14,105 +12,151 @@ function sleep(n = 1000) {
     })
 }
 
+const jsonConfigFilePath = "./win_webview2.json";
 
 /**
  * 
- * @param {object } arg 
+ * @returns {Promise<import("./ww2_builder_type").ConfigWW2> }
  */
-async function waitingResult(arg) {
-    if (resultInUse) return "";
-    resultInUse = true;
+async function readConfig() {
+    let str = await readFile(jsonConfigFilePath);
+    let jsonObj = JSON.parse(str.toString());
 
-    resultDataFromWebview2 = null;
-
-    var objstr = JSON.stringify(arg);
-    sendToPipe(`${prefixWebview}JSON` + objstr);
-
-    while (resultDataFromWebview2 == null) {
-        await sleep(200);
-    }
-
-    resultInUse = false;
-    return resultDataFromWebview2;
-
+    return jsonObj;
 }
 
- 
-  
-async function createPipe() {
+async function getExecPath() {
+    let jsonConfig = await readConfig();
+    let exeFilePath = jsonConfig.appname + ".exe";
 
-    // ini akan terhubung terus menerus
+    return exeFilePath;
 
-    /** @type {string} */
-    // @ts-ignore
-    let PIPE_CPLUS_SENDER = process.env.PIPE_PATH + "Sender"; 
-
-
-    let client  = net.createConnection(PIPE_CPLUS_SENDER, () => {
-        console.log('Anak terhubung ke Named Pipe!');
-    });
-
-     
-
-    client.on('data', (buff) => {
-        let data = buff.toString(); 
-
-        if (!data.startsWith(prefixWebviewResult)) return false;
-        let result = data.substring(prefixWebviewResult.length);
-        resultDataFromWebview2 = result;
-    }); 
-
-    // while(true){
-    //     await sleep();
-    //     sendToPipe("ping");
-    // }
-}
-
-/** 
- * @param {string} msg  
- */
-function sendToPipe(msg) {
-
-    /** @type {any} */
-    var PIPE_CPLUS_Reader = process.env.PIPE_PATH; 
-    let client  = net.createConnection(PIPE_CPLUS_Reader, () => {
-        console.log("PIPE_CPLUS_Reader terhubung")
-        client.write(msg);
-    });
-    client.on("error",(e)=>{
-        console.log("errornya apa  : ", e );
-    })
 }
 
 /**
 * 
 * @param {import("./argtype").OpenWebArg } arg 
 */
-export function openWeb(arg) {
-    if (!isOncloseSetted) {
-        isOncloseSetted = true;
-        createPipe();
+export async function openWeb(arg) {
+    let jsonConfig = await readConfig();
+    let exeFilePath = jsonConfig.appname + ".exe";
+
+    let arrOpen = [
+        "fun=openwebview",
+        "wndClassName=" + arg.winClassName,
+        "url=" + arg.url,
+        "width=" + arg.width,
+        "height=" + arg.height,
+        //"kiosk=true",
+        //"maximize=true",
+        "title=auto",
+        //"isDebugMode=true"
+    ];
+
+    if (arg.maximize) {
+        arrOpen.push("maximize=true");
     }
 
-    arg["fun"] = "OpenWeb";
-    var objstr = JSON.stringify(arg);
-    sendToPipe(`${prefixWebview}JSON` + objstr);
+    if (arg.kiosk) {
+
+        arrOpen.push("kiosk=true");
+    }
+
+    if (arg.isDebugMode) {
+        arrOpen.push("isDebugMode=true");
+    }
+
+
+
+
+    execFile(exeFilePath, arrOpen, (err, data) => {
+        console.log("error yaaa" + err)
+    })
+}
+
+
+
+/**
+ *
+ * @param {import("./argtype").OpenDialogFileArg} arg
+ * @returns {Promise<string>}
+ */
+export async function openDialogFile(arg) {
+    let exeFilePath = await getExecPath();
+    return new Promise((r, x) => {
+        execFile(exeFilePath,
+            [
+                "fun=openFileDialog",
+                "wndClassName="+arg.winClassName,
+                "filter=" + arg.filter,
+
+            ], (/** @type {any} */ err, /** @type {string} */ data) => {
+
+                let filepath = "";
+                for (let l of data.split("\r\n")) {
+                    if (l.startsWith("result:")) {
+                        filepath = l.substring(7, l.length);
+                    }
+                }
+
+                r(filepath);
+            })
+    })
 }
 
 /**
  * 
- * @param {import("./argtype").OpenDialogFileArg} arg 
- * @returns {Promise<string>}
+ * @param {import("./argtype").OpenDialogArg} arg 
+ * @returns 
  */
-export function openDialogFile(arg) {
-    arg["fun"] = "OpenDialogFIle";
-    return waitingResult(arg);
+export async function openDialogFolder(arg) {
+    let exeFilePath = await getExecPath();
+    return new Promise((r, x) => {
+        execFile(exeFilePath,
+            [
+                "fun=openFolderDialog",
+                "wndClassName=" + arg.winClassName,
+
+            ], (
+                /** @type {any} */
+                err,
+                /** @type {string} */
+                data
+            ) => {
+
+            let filepath = "";
+            for (let l of data.split("\r\n")) {
+                if (l.startsWith("result:")) {
+                    filepath = l.substring(7, l.length);
+                }
+            }
+
+            r(filepath);
+        })
+    })
+}
+/**
+ * 
+ * @param {import("./argtype").OpenDialogArg} arg 
+ * @returns 
+ */
+export async function closeWindowWebView(arg) {
+    let exeFilePath = await getExecPath();
+    return new Promise((r, x) => {
+        execFile(exeFilePath,
+            [
+                "fun=closewindow",
+                "wndClassName=" + arg.winClassName,
+
+            ], ( 
+                /** @type {any} */
+                err,
+                /** @type {string} */
+                data) => {
+
+                 
+                r(data);
+            })
+    })
 }
 
-export async function openDialogFolder() {
-    let obj = {
-        fun: "OpenDialogFolder"
-    };
-    return waitingResult(obj);
-}
- 

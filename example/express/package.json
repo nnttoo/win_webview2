@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build_node": "node ./builder.mjs",
+    "testrun": "cd ./dist &&  node ./app.js",
     "win_webview2": "win_webview2",
     "run": "cd ./dist && openweb.exe"
   },
