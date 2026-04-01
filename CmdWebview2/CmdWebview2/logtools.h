@@ -4,6 +4,7 @@
 #include <stdlib.h> 
 #include <stdlib.h>
 #include <string>
+#include <iostream>
 
 void LogPrint(std::wstring str) {
 
