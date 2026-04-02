@@ -159,6 +159,11 @@ export class WW2Deploy {
         }
 
         let objstr = JSON.stringify(objConfig, null, 2);
+        if(fs.existsSync(jsonConfigFilePath)){
+            logPrint("file config is exits");
+            return;
+        }
+
         await fs.promises.writeFile(jsonConfigFilePath, objstr);
     }
 
