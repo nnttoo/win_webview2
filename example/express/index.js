@@ -39,6 +39,36 @@ const app   = express();
 const port = 0; // 0 random port
  
 
+/**
+ * 
+ * @param {number} n 
+ * @returns 
+ */
+function sleep(n) {
+    return new Promise((r, x) => {
+        setTimeout(() => {
+            r(null);
+        }, n);
+    })
+}
+
+
+let timePing = Date.now();
+
+async function runCheck() {
+    console.log("run check");
+    while (true) {
+        if (Date.now() > timePing + (1000 * 10)) {
+            break;
+        }
+
+        await sleep(1000);
+    }
+    console.log("process exit");
+    process.exit();
+}
+runCheck();
+
 app.use(express.static(path.join(__dirname, 'html')))
 app.get("/openfiledialog", async (r, x) => {
 
@@ -51,6 +81,12 @@ app.get("/openfolderdialog", async (r, x) => {
     let filepath = await openFileDilogFolder();
 
     x.send(filepath)
+});
+
+app.get("/pingServer", async (r, x) => {
+
+    timePing = Date.now();
+    x.send("ok");
 })
 
 /** @type {Server} */

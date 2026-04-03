@@ -1,23 +1,28 @@
-//@ts-check
+import { execFile } from "node:child_process";
+import { readFile } from "node:fs/promises";
 
-import { exec, execFile } from "child_process";
-import { readFile } from "fs/promises";
-
-import { arch } from "os";
-const arc = arch();
-
-function sleep(n = 1000) {
-    return new Promise((r, x) => {
-        setTimeout(r, n);
-    })
+export type OpenWebArg = {
+    url: string
+    width: number 
+    height: number
+    kiosk: boolean 
+    maximize: boolean
+    title: string 
+    isDebugMode : boolean
+    winClassName : string
 }
 
-const jsonConfigFilePath = "./win_webview2.json";
+export type OpenDialogFileArg = { 
+    winClassName : string
+    filter : string
+}
 
-/**
- * 
- * @returns {Promise<import("./ww2_builder_type").ConfigWW2> }
- */
+
+export type OpenDialogArg = { 
+    winClassName : string 
+}
+
+const jsonConfigFilePath = "./win_webview2.json"; 
 async function readConfig() {
     let str = await readFile(jsonConfigFilePath);
     let jsonObj = JSON.parse(str.toString());
@@ -33,11 +38,7 @@ async function getExecPath() {
 
 }
 
-/**
-* 
-* @param {import("./argtype").OpenWebArg } arg 
-*/
-export async function openWeb(arg) {
+export async function openWeb(arg : OpenWebArg) {
     let jsonConfig = await readConfig();
     let exeFilePath = jsonConfig.appname + ".exe";
 
@@ -70,18 +71,11 @@ export async function openWeb(arg) {
 
 
     execFile(exeFilePath, arrOpen, (err, data) => {
-        console.log("error yaaa" + err)
+        console.log(  err)
     })
 }
-
-
-
-/**
- *
- * @param {import("./argtype").OpenDialogFileArg} arg
- * @returns {Promise<string>}
- */
-export async function openDialogFile(arg) {
+ 
+export async function openDialogFile(arg : OpenDialogFileArg) {
     let exeFilePath = await getExecPath();
     return new Promise((r, x) => {
         execFile(exeFilePath,
@@ -103,13 +97,8 @@ export async function openDialogFile(arg) {
             })
     })
 }
-
-/**
- * 
- * @param {import("./argtype").OpenDialogArg} arg 
- * @returns 
- */
-export async function openDialogFolder(arg) {
+ 
+export async function openDialogFolder(arg : OpenDialogArg) {
     let exeFilePath = await getExecPath();
     return new Promise((r, x) => {
         execFile(exeFilePath,
@@ -134,13 +123,8 @@ export async function openDialogFolder(arg) {
             r(filepath);
         })
     })
-}
-/**
- * 
- * @param {import("./argtype").OpenDialogArg} arg 
- * @returns 
- */
-export async function closeWindowWebView(arg) {
+} 
+export async function closeWindowWebView(arg : OpenDialogArg) {
     let exeFilePath = await getExecPath();
     return new Promise((r, x) => {
         execFile(exeFilePath,
@@ -159,4 +143,3 @@ export async function closeWindowWebView(arg) {
             })
     })
 }
-

@@ -1,30 +1,23 @@
-// @ts-check
-
-/** @typedef {import("./ww2_builder_type").ConfigWW2} ConfigWW2 */
 
 
-import fs from 'fs'
+import fs from "fs"
+import fspromise  from "fs/promises"
 import sharp from "sharp"
-import path from "path";
-import { logPrint } from "./ww2_builder_log.mjs";
+import path from "path"; 
 import { fileURLToPath } from 'url';
 import rcedit from "rcedit";
 import sharpsToIco from "sharp-ico"
+import { ConfigWW2 } from './builder_tp';
+import { logPrint } from '../logprint';
+import { copyDir } from './build_copyDir';
 
 
 const jsonConfigFilePath = "./win_webview2.json";
 
-export class WW2Deploy {
+export class WW2Deploy { 
 
-    /** @type {ConfigWW2 | null} */
-
-    configObjec = null;
-
-    /** @type {"x64" | "Win32" } */
-    platform = "Win32";
-
-    /** @type {string | null} */
-    outputExeFile = null;
+    configObjec? : ConfigWW2;  
+    outputExeFile? :string;
 
 
 
@@ -75,25 +68,29 @@ export class WW2Deploy {
 
     }
 
-    async copyExe() {
-        let currentDirMjs = fileURLToPath(import.meta.url);
-        let currentDir = path.dirname(currentDirMjs);
+    async copyExe() { 
+        let currentDir = path.join(__dirname,"../../");
 
         if (this.configObjec == null) return;
-        let config = this.configObjec;
+        let config = this.configObjec; 
+        let platform = config.platform;
 
-        logPrint("COpy webview2 exe file");
-        logPrint(currentDir);
 
-        let inputFileExe = path.join(currentDir, "win_lib", this.platform, "CmdWebview2.exe");
 
-        let outFileExe = path.join(config.outdir, config.appname + ".exe");
-        this.outputExeFile = inputFileExe;
-        await fs.promises.copyFile(inputFileExe, outFileExe);
 
-        let inputFileDll = path.join(currentDir, "win_lib", this.platform, "WebView2Loader.dll");
-        let outFileDll = path.join(config.outdir, "WebView2Loader.dll");
-        await fs.promises.copyFile(inputFileDll, outFileDll);
+        let inputDir = path.join(
+            currentDir, "win_lib", 
+            platform);
+ 
+        
+
+        this.outputExeFile = path.join(config.outdir, config.appname + ".exe");
+        await copyDir(inputDir, config.outdir); 
+        await fspromise.rename(
+            path.join(config.outdir,"CmdWebview2.exe"),
+            this.outputExeFile
+
+        );
 
         await (async () => {
             let inputFileDll = jsonConfigFilePath;
@@ -148,15 +145,15 @@ export class WW2Deploy {
         await fs.promises.writeFile(oututFileConf, configCtn);
     }
 
-    static async initWW2() {
-        /** @type {ConfigWW2} */
+    static async initWW2() { 
 
-        let objConfig = {
+        let objConfig : ConfigWW2 = {
             entry_point: "app.js",
             appname: "openweb",
             icon_path: "./icon.png",
-            outdir: "./dist"
-        }
+            outdir: "./dist",
+            platform : 'Win32'
+        }  
 
         let objstr = JSON.stringify(objConfig, null, 2);
         if(fs.existsSync(jsonConfigFilePath)){

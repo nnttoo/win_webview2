@@ -1,15 +1,20 @@
 {
   "name": "win_webview2",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnttoo/win_webview2"
   },
   "description": "",
-  "main": "./winWebview2.mjs", 
-  "types": "./winWebview2.d.ts",
+  "main": "./tsDist/tsExport/winwebview2.js",
+  "types": "./tsDist/tsExport/winwebview2.d.ts",
   "bin": {
-    "win_webview2": "./ww2_builder.mjs"
+    "win_webview2": "tsDistRun.js"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "build_watch": "tsc --watch"
   },
   "author": "",
   "license": "ISC",
@@ -17,9 +22,12 @@
     "prompts": "^2.4.2",
     "rcedit": "^4.0.1",
     "sharp": "^0.33.5",
-    "sharp-ico": "^0.1.5"
+    "sharp-ico": "^0.1.5",
+    "tsx": "^4.21.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0"
+    "@types/node": "^25.5.0",
+    "@types/prompts": "^2.4.9",
+    "typescript": "^6.0.2"
   }
 }
