@@ -2,7 +2,7 @@
 import  express  from 'express';
 import path  from 'path'; 
 import { Server } from 'http';
-import {   openDialogFile, openDialogFolder, openWeb } from "win_webview2"
+import {   controlWindow, openDialogFile, openDialogFolder, openWeb } from "win_webview2"
  
 /**
  * 
@@ -88,6 +88,72 @@ app.get("/pingServer", async (r, x) => {
     timePing = Date.now();
     x.send("ok");
 })
+
+
+app.get("/close", async (r, x) => {
+    controlWindow({
+        winClassName : "openWebApp",
+        width : 400,
+        height : 400,
+        controlcmd : "close",
+        left : 0,
+        top : 0
+    })
+    x.send("ok");
+});
+
+
+
+app.get("/maximize", async (r, x) => {
+    controlWindow({
+        winClassName : "openWebApp",
+        width : 400,
+        height : 400,
+        controlcmd : "maximize",
+        left : 0,
+        top : 0
+    })
+    x.send("ok");
+});
+
+
+app.get("/minimize", async (r, x) => {
+    controlWindow({
+        winClassName : "openWebApp",
+        width : 400,
+        height : 400,
+        controlcmd : "minimize",
+        left : 0,
+        top : 0
+    })
+    x.send("ok");
+});
+
+
+app.get("/move", async (r, x) => {
+    controlWindow({
+        winClassName : "openWebApp",
+        width : 400,
+        height : 400,
+        controlcmd : "move",
+        left : 0,
+        top : 0
+    })
+    x.send("ok");
+});
+
+
+app.get("/resize", async (r, x) => {
+    controlWindow({
+        winClassName : "openWebApp",
+        width : 400,
+        height : 400,
+        controlcmd : "resize",
+        left : 0,
+        top : 0
+    })
+    x.send("ok");
+});
 
 /** @type {Server} */
 let server ;

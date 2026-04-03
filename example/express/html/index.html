@@ -25,6 +25,15 @@
                 aria-label="Recipient's username" aria-describedby="button-addon2">
             <button id="openfolder" class="btn btn-outline-secondary" type="button">Open File Dialog</button>
         </div>
+
+        
+        <h4>Control Window</h4>
+        <button  onclick="(()=>{fetch(`/close`); })()" class="btn btn-outline-secondary" type="button">Close Window Manually</button>
+        <button  onclick="(()=>{fetch(`/move`); })()" class="btn btn-outline-secondary" type="button">Move Window</button>
+        <button  onclick="(()=>{fetch(`/resize`); })()" class="btn btn-outline-secondary" type="button">Resize Window</button>
+        <button  onclick="(()=>{fetch(`/maximize`); })()" class="btn btn-outline-secondary" type="button">Maximize Window</button>
+        <button  onclick="(()=>{fetch(`/minimize`); })()" class="btn btn-outline-secondary" type="button">Minimize Window</button>
+
     </div>
 
     <script>

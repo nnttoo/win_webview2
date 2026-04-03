@@ -18,4 +18,11 @@ export type OpenDialogArg = {
 export declare function openWeb(arg: OpenWebArg): Promise<void>;
 export declare function openDialogFile(arg: OpenDialogFileArg): Promise<unknown>;
 export declare function openDialogFolder(arg: OpenDialogArg): Promise<unknown>;
-export declare function closeWindowWebView(arg: OpenDialogArg): Promise<unknown>;
+export declare function controlWindow(arg: {
+    winClassName: string;
+    controlcmd: "close" | "maximize" | "minimize" | "move" | "resize";
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+}): Promise<unknown>;

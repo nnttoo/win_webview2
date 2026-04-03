@@ -124,13 +124,28 @@ export async function openDialogFolder(arg : OpenDialogArg) {
         })
     })
 } 
-export async function closeWindowWebView(arg : OpenDialogArg) {
+ 
+export async function controlWindow(arg : {
+    winClassName: string,
+    controlcmd : "close" | "maximize" | "minimize" | "move" | "resize",
+    left : number,
+    top :  number,
+    width : number,
+    height : number,
+}) {
     let exeFilePath = await getExecPath();
     return new Promise((r, x) => {
         execFile(exeFilePath,
             [
-                "fun=closewindow",
+                "fun=controlwindow",
                 "wndClassName=" + arg.winClassName,
+                "controlcmd="+arg.controlcmd,
+
+                "left="+arg.left,
+                "top="+arg.top,
+                "width="+arg.width,
+                "height="+arg.height,
+
 
             ], ( 
                 /** @type {any} */

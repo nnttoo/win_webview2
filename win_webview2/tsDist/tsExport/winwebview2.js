@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.openWeb = openWeb;
 exports.openDialogFile = openDialogFile;
 exports.openDialogFolder = openDialogFolder;
-exports.closeWindowWebView = closeWindowWebView;
+exports.controlWindow = controlWindow;
 const node_child_process_1 = require("node:child_process");
 const promises_1 = require("node:fs/promises");
 const jsonConfigFilePath = "./win_webview2.json";
@@ -83,12 +83,17 @@ async function openDialogFolder(arg) {
         });
     });
 }
-async function closeWindowWebView(arg) {
+async function controlWindow(arg) {
     let exeFilePath = await getExecPath();
     return new Promise((r, x) => {
         (0, node_child_process_1.execFile)(exeFilePath, [
-            "fun=closewindow",
+            "fun=controlwindow",
             "wndClassName=" + arg.winClassName,
+            "controlcmd=" + arg.controlcmd,
+            "left=" + arg.left,
+            "top=" + arg.top,
+            "width=" + arg.width,
+            "height=" + arg.height,
         ], (
         /** @type {any} */
         err, 
