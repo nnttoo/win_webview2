@@ -2,7 +2,7 @@
 import  express  from 'express';
 import path  from 'path'; 
 import { Server } from 'http';
-import {    openWeb } from "win_webview2"
+import {   openWeb   } from "win_webview2/node"
  
 /**
  * 

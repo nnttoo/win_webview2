@@ -4,15 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsx ./build_tools/build_start.ts",    
-    "win_webview2" : "npx win_webview2"
+    "run": "tsx ./srcNode/app.ts",
+    "win_webview2": "npx win_webview2"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": { 
+  "dependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
     "win_webview2": "file:../../win_webview2"
-  },
-  "devDependencies": {
-     
   }
 }

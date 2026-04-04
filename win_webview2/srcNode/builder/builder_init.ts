@@ -1,16 +1,10 @@
 import { existsSync } from "fs";
 import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
-import { getDirname } from "./dirnameTool";
+import { getDirname } from "../tsExport/dirnameTool";
 import path from "path";
 import { exec } from "child_process";
-
-export type ConfigWW2 = {
-    appname: string;
-    entry_point: string;
-    outdir: string;
-    platform: 'Win32' | 'x64'
-};
-
+import { ConfigWW2 } from "../tsExport/ww2_config";
+ 
 
 const jsonConfigFilePath = "./win_webview2.json";
 let mdirname = getDirname();
@@ -22,7 +16,8 @@ export async function ww2Init() {
         entry_point: "app.js",
         appname: "openweb",
         outdir: "./dist",
-        platform: 'x64'
+        platform: 'x64',
+        icon_path : "icon.png"
     }
 
     let objstr = JSON.stringify(ww2Config, null, 2);

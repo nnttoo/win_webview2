@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ww2Init = ww2Init;
 const fs_1 = require("fs");
 const promises_1 = require("fs/promises");
-const dirnameTool_1 = require("./dirnameTool");
+const dirnameTool_1 = require("../tsExport/dirnameTool");
 const path_1 = __importDefault(require("path"));
 const jsonConfigFilePath = "./win_webview2.json";
 let mdirname = (0, dirnameTool_1.getDirname)();
@@ -16,7 +16,8 @@ async function ww2Init() {
         entry_point: "app.js",
         appname: "openweb",
         outdir: "./dist",
-        platform: 'x64'
+        platform: 'x64',
+        icon_path: "icon.png"
     };
     let objstr = JSON.stringify(ww2Config, null, 2);
     if (!(0, fs_1.existsSync)(jsonConfigFilePath)) {

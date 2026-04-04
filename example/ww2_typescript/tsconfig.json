@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "types": ["node"], 
-    "moduleResolution": "node16",
-    "module": "Node16",
-    "esModuleInterop": true, 
-    "target": "es2020"
-  }
-}
