@@ -1,6 +1,0 @@
-{
-  "entry_point": "app.js",
-  "appname": "openweb",
-  "icon_path": "./icon.png",
-  "outdir": "./dist"
-}

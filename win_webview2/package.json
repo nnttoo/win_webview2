@@ -13,8 +13,8 @@
   },
   "type": "commonjs",
   "scripts": {
-    "build": "tsc",
-    "build_watch": "tsc --watch",
+    "build": "tsc -p ./srcNode/tsconfig.json",
+    "build_watch": "npm run build -- --watch",
     "copy_dll": "tsx ./buildtools/copyDll.ts"
   },
   "author": "",

@@ -8,8 +8,7 @@ import { fileURLToPath } from 'url';
 import rcedit from "rcedit";
 import sharpsToIco from "sharp-ico"
 import { ConfigWW2 } from './builder_tp';
-import { logPrint } from '../logprint';
-import { copyDir } from './build_copyDir';
+import { logPrint } from '../logprint'; 
 
 
 const jsonConfigFilePath = "./win_webview2.json";

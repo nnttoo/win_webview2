@@ -2,6 +2,6 @@
 
 const path = require("path");
 
-const entry = path.resolve(__dirname, "./tsDist/srcBuilder/ww2_build_promp.js");
+const entry = path.resolve(__dirname, "./dist/node/builder/builder_promps.js");
 
 require(entry);
