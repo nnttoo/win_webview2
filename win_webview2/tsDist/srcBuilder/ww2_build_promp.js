@@ -22,6 +22,11 @@ async function buildForServer() {
                     await ww2_buildercore_1.WW2Deploy.startDeploy();
                 }
             },
+            {
+                title: 'version', value: async () => {
+                    console.log("v3");
+                }
+            },
         ]
     });
     if (response && response.menu) {

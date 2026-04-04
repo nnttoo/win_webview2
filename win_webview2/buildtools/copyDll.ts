@@ -18,8 +18,13 @@ function debugDir(dirPath: string) {
         await copyFile(path.join(rootPath, src), path.join(rootPath, target));
     }
 
-    await mkdir(path.join(rootPath, "win_webview2/win_lib/Win32"));
-    await mkdir(path.join(rootPath, "win_webview2/win_lib/x64"));
+    try {
+
+        await mkdir(path.join(rootPath, "win_webview2/win_lib/Win32"));
+        await mkdir(path.join(rootPath, "win_webview2/win_lib/x64"));
+    } catch (error) {
+
+    }
 
     await copyFromRoot(
         "exeOpener/build/x64/exeOpenner.exe",

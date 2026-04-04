@@ -18,4 +18,13 @@ namespace MyNapiTools
     {
         return Napi::String::New(env, (const char16_t *)wstr.c_str());
     }
+
+    int NapiToInt(Napi::Value val, int defVal){
+        if(val.IsNumber()){
+            return val.As<Napi::Number>().Int32Value();
+        }
+
+        return defVal;
+
+    }
 }

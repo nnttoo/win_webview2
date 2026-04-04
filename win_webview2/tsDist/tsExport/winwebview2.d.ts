@@ -1,28 +1,31 @@
-export type OpenWebArg = {
+export interface Ww2WebConfig {
+    callback: (err: any, data: any) => void;
+    wclassname: string;
     url: string;
-    width: number;
-    height: number;
-    kiosk: boolean;
-    maximize: boolean;
     title: string;
-    isDebugMode: boolean;
-    winClassName: string;
-};
-export type OpenDialogFileArg = {
-    winClassName: string;
-    filter: string;
-};
-export type OpenDialogArg = {
-    winClassName: string;
-};
-export declare function openWeb(arg: OpenWebArg): Promise<void>;
-export declare function openDialogFile(arg: OpenDialogFileArg): Promise<unknown>;
-export declare function openDialogFolder(arg: OpenDialogArg): Promise<unknown>;
-export declare function controlWindow(arg: {
-    winClassName: string;
-    controlcmd: "close" | "maximize" | "minimize" | "move" | "resize";
-    left: number;
-    top: number;
     width: number;
     height: number;
-}): Promise<unknown>;
+    isKiosk: boolean;
+    isMaximize: boolean;
+    isDebug: boolean;
+}
+export interface WW2FileDialogArg {
+    callback: (err: any, data: any) => void;
+    filter: string;
+    ownerClassName: string;
+}
+export interface WW2ControlWindowsArg {
+    wndClassName: string;
+    controlcmd: "close" | "move" | "maximize" | "minimize" | "resize" | "check";
+    left?: number;
+    top?: number;
+    height?: number;
+    width?: number;
+}
+export interface Ww2Module {
+    openWeb: (arg: Ww2WebConfig) => void;
+    openFileDialog: (arg: WW2FileDialogArg) => void;
+    openFolderDialog: (arg: WW2FileDialogArg) => void;
+    controlWindow: (arg: WW2ControlWindowsArg) => void;
+}
+export declare function openWeb(arg: Ww2WebConfig): Promise<void>;

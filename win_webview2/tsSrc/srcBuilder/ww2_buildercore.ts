@@ -23,6 +23,7 @@ export class WW2Deploy {
 
     async makeDistFolder() {
 
+        console.log("make dist folder");
         if (this.configObjec == null) return;
         let config = this.configObjec;
 
@@ -39,6 +40,7 @@ export class WW2Deploy {
     }
 
     async buildIcon() {
+        console.log("create icon");
         if (this.configObjec == null) return;
 
         let config = this.configObjec;
@@ -69,6 +71,7 @@ export class WW2Deploy {
     }
 
     async copyExe() { 
+        console.log("edit exe");
         let currentDir = path.join(__dirname,"../../");
 
         if (this.configObjec == null) return;
@@ -87,7 +90,7 @@ export class WW2Deploy {
         this.outputExeFile = path.join(config.outdir, config.appname + ".exe");
         await copyDir(inputDir, config.outdir); 
         await fspromise.rename(
-            path.join(config.outdir,"CmdWebview2.exe"),
+            path.join(config.outdir,"exeOpenner.exe"),
             this.outputExeFile
 
         );

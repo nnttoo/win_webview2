@@ -19,6 +19,12 @@ export async function buildForServer() {
                     await WW2Deploy.startDeploy();
                 }
             }, 
+            {
+                title: 'version', value: async () => {
+
+                    console.log("v3");
+                }
+            }, 
         ]
     });
     if (response && response.menu) {

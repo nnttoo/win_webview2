@@ -15,6 +15,7 @@ const build_copyDir_1 = require("./build_copyDir");
 const jsonConfigFilePath = "./win_webview2.json";
 class WW2Deploy {
     async makeDistFolder() {
+        console.log("make dist folder");
         if (this.configObjec == null)
             return;
         let config = this.configObjec;
@@ -28,6 +29,7 @@ class WW2Deploy {
         }
     }
     async buildIcon() {
+        console.log("create icon");
         if (this.configObjec == null)
             return;
         let config = this.configObjec;
@@ -45,6 +47,7 @@ class WW2Deploy {
         console.log('✅ Berhasil membuat icon.ico yang valid untuk rcedit!');
     }
     async copyExe() {
+        console.log("edit exe");
         let currentDir = path_1.default.join(__dirname, "../../");
         if (this.configObjec == null)
             return;
@@ -53,7 +56,7 @@ class WW2Deploy {
         let inputDir = path_1.default.join(currentDir, "win_lib", platform);
         this.outputExeFile = path_1.default.join(config.outdir, config.appname + ".exe");
         await (0, build_copyDir_1.copyDir)(inputDir, config.outdir);
-        await promises_1.default.rename(path_1.default.join(config.outdir, "CmdWebview2.exe"), this.outputExeFile);
+        await promises_1.default.rename(path_1.default.join(config.outdir, "exeOpenner.exe"), this.outputExeFile);
         await (async () => {
             let inputFileDll = jsonConfigFilePath;
             let outFileDll = path_1.default.join(config.outdir, "win_webview2.json");

@@ -1,8 +1,9 @@
 #include <napi.h>
 #include "openWebview2Napi.h"
 #include "openfiledialogNapi.h"
-#include "napitools.h"  
+#include "napitools.h"
 #include "openDirDialogNapi.h"
+#include "wndControl.h"
 
 Napi::Value openWeb(const Napi::CallbackInfo &info)
 {
@@ -48,7 +49,7 @@ Napi::Value napiOpenFileDialog(const Napi::CallbackInfo &info)
 
 Napi::Value napiOpenDirDialog(const Napi::CallbackInfo &info)
 {
-     Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
     if (info.Length() < 1 || !info[0].IsObject())
     {
         Napi::TypeError::New(env, "Harus mengirim satu objek konfigurasi").ThrowAsJavaScriptException();
@@ -58,11 +59,28 @@ Napi::Value napiOpenDirDialog(const Napi::CallbackInfo &info)
     Napi::Object paramsArg = info[0].As<Napi::Object>();
     Napi::Function callback = paramsArg.Get("callback").As<Napi::Function>();
 
-    DialogDir::NapiWorker * worker = new DialogDir::NapiWorker(callback);
+    DialogDir::NapiWorker *worker = new DialogDir::NapiWorker(callback);
     worker->parseConfig(paramsArg);
-    worker->Queue(); 
+    worker->Queue();
 
     return env.Undefined();
+}
+
+Napi::Value napiControlWindow(const Napi::CallbackInfo &info)
+{
+
+    Napi::Env env = info.Env();
+    if (info.Length() < 1 || !info[0].IsObject())
+    {
+        Napi::TypeError::New(env, "Harus mengirim satu objek konfigurasi").ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    Napi::Object paramsArg = info[0].As<Napi::Object>();
+
+    WndControll::WndControllArg arg = WndControll::parseNapi(paramsArg);
+    std::wstring result =  WndControll::controlWindow(arg);
+
+    return MyNapiTools::WStringToNapi(env,result);
 }
 
 // 2. Registrasi fungsi ke objek 'exports' (seperti module.exports)
@@ -71,6 +89,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
     exports.Set(Napi::String::New(env, "openWeb"), Napi::Function::New(env, openWeb));
     exports.Set(Napi::String::New(env, "openFileDialog"), Napi::Function::New(env, napiOpenFileDialog));
     exports.Set(Napi::String::New(env, "openFolderDialog"), Napi::Function::New(env, napiOpenDirDialog));
+    exports.Set(Napi::String::New(env, "controlWindow"), Napi::Function::New(env, napiControlWindow));
     return exports;
 }
 

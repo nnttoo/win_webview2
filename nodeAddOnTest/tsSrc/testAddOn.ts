@@ -20,11 +20,22 @@ interface WW2FileDialogArg {
     ownerClassName : string;
 }
 
+interface WW2ControlWindowsArg{
+    wndClassName : string;
+    controlcmd : "close" | "move" | "maximize" | "minimize" | "resize" | "check",
+    left? : number;
+    top? : number;
+    height? : number;
+    width? : number;
+}
+
 interface Ww2Module {
     openWeb: (arg: Ww2WebConfig) => void;
     openFileDialog: (arg: WW2FileDialogArg) => void;
     openFolderDialog :(arg: WW2FileDialogArg) => void;
+    controlWindow :(arg: WW2ControlWindowsArg) => void;
 }
+
 let filepath = path.join(
     __dirname,
     "../../nodeAddOn/build/x64/Release/ww2_addon.node"
@@ -77,10 +88,28 @@ let testFileDialog = () => {
 
 }
 
+function controlWindow(){
+    var r = myAddon.controlWindow({
+        wndClassName : "myClassName",
+        controlcmd : "minimize"
+    });
+
+    console.log(r);
+}
+
+function sleep(n : number){
+    return new Promise((r,x)=>{
+        setTimeout(() => {
+            r(null);  
+        }, n);
+    })
+}
+
 (async () => {
-
-
-    var result = testFolderDialog();
-    console.log(result);
+    testWebView();
+    console.log("waiting");
+    await sleep(2000);
+    console.log("control windows");
+    controlWindow();
 })();
 
