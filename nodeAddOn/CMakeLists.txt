@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # 1. INITIALIZATION & CACHE SETUP
-set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/external_deps")
+#set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/external_deps")
 include(FetchContent)
 
 # Hilangkan warning timestamp

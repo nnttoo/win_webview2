@@ -51,74 +51,81 @@ public:
 
 		LogPrint(userDataFolder);
 
-		CreateCoreWebView2EnvironmentWithOptions(nullptr, userDataFolder.c_str(), nullptr,
-												 Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-													 [this, hWnd, config](HRESULT result, ICoreWebView2Environment *env) -> HRESULT
-													 {
-														 // Create a CoreWebView2Controller and get the associated CoreWebView2 whose parent is the main window hWnd
-														 env->CreateCoreWebView2Controller(hWnd, Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-																									 [this, hWnd, config](HRESULT result, ICoreWebView2Controller *controller) -> HRESULT
-																									 {
-																										 if (controller != nullptr)
-																										 {
-																											 this->webviewController = controller;
-																											 this->webviewController->get_CoreWebView2(this->webview.ReleaseAndGetAddressOf());
-																										 }
+		CreateCoreWebView2EnvironmentWithOptions(
+			nullptr,
+			userDataFolder.c_str(),
+			nullptr,
+			Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+				[this, hWnd, config](HRESULT result, ICoreWebView2Environment *env) -> HRESULT
+				{
+					// Create a CoreWebView2Controller and get the associated CoreWebView2 whose parent is the main window hWnd
+					env->CreateCoreWebView2Controller(
+						hWnd,
+						Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+							[this, hWnd, config](HRESULT result, ICoreWebView2Controller *controller) -> HRESULT
+							{
+								if (controller != nullptr)
+								{
+									this->webviewController = controller;
+									this->webviewController->get_CoreWebView2(this->webview.ReleaseAndGetAddressOf());
+								}
 
-																										 // Add a few settings for the webview
-																										 // The demo step is redundant since the values are the default settings
-																										 Microsoft::WRL::ComPtr<ICoreWebView2Settings> settings;
-																										 this->webview->get_Settings(&settings);
-																										 settings->put_IsScriptEnabled(TRUE);
-																										 settings->put_AreDefaultScriptDialogsEnabled(FALSE);
-																										 settings->put_IsWebMessageEnabled(TRUE);
-																										 settings->put_AreDefaultContextMenusEnabled(FALSE);
-																										 // Resize WebView to fit the bounds of the parent window
+								// Add a few settings for the webview
+								// The demo step is redundant since the values are the default settings
+								Microsoft::WRL::ComPtr<ICoreWebView2Settings> settings;
+								this->webview->get_Settings(&settings);
+								settings->put_IsScriptEnabled(TRUE);
+								settings->put_AreDefaultScriptDialogsEnabled(FALSE);
+								settings->put_IsWebMessageEnabled(TRUE);
+								settings->put_AreDefaultContextMenusEnabled(FALSE);
+								// Resize WebView to fit the bounds of the parent window
 
-																										 settings->put_AreDevToolsEnabled(config.isDebugMode);
-																										 settings->put_AreDefaultContextMenusEnabled(config.isDebugMode);
+								settings->put_AreDevToolsEnabled(config.isDebugMode);
+								settings->put_AreDefaultContextMenusEnabled(config.isDebugMode);
 
-																										 RECT bounds;
-																										 GetClientRect(hWnd, &bounds);
+								RECT bounds;
+								GetClientRect(hWnd, &bounds);
 
-																										 this->webviewController->put_Bounds(bounds);
+								this->webviewController->put_Bounds(bounds);
 
-																										 // Schedule an async task to navigate to Bing
-																										 this->webview->Navigate(config.url.c_str());
+								// Schedule an async task to navigate to Bing
+								this->webview->Navigate(config.url.c_str());
 
-																										 // <NavigationEvents>
-																										 // Step 4 - Navigation events
-																										 // register an ICoreWebView2NavigationStartingEventHandler to cancel any non-https navigation
-																										 EventRegistrationToken token;
-																										 this->webview->add_NavigationStarting(Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
-																																				   [](ICoreWebView2 *webview, ICoreWebView2NavigationStartingEventArgs *args) -> HRESULT
-																																				   {
-																																					   return S_OK;
-																																				   })
-																																				   .Get(),
-																																			   &token);
+								// <NavigationEvents>
+								// Step 4 - Navigation events
+								// register an ICoreWebView2NavigationStartingEventHandler to cancel any non-https navigation
+								EventRegistrationToken token;
+								this->webview->add_NavigationStarting(
+									Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
+										[](ICoreWebView2 *webview, ICoreWebView2NavigationStartingEventArgs *args) -> HRESULT
+										{
+											return S_OK;
+										})
+										.Get(),
+									&token);
 
-																										 if (config.title == L"auto")
-																										 {
-																											 this->webview->add_DocumentTitleChanged(Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-																																						 [this, hWnd](ICoreWebView2 *webview, IUnknown *args) -> HRESULT
-																																						 {
-																																							 wil::unique_cotaskmem_string title;
-																																							 this->webview->get_DocumentTitle(&title);
+								if (config.title == L"auto")
+								{
+									this->webview->add_DocumentTitleChanged(
+										Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+											[this, hWnd](ICoreWebView2 *webview, IUnknown *args) -> HRESULT
+											{
+												wil::unique_cotaskmem_string title;
+												this->webview->get_DocumentTitle(&title);
 
-																																							 SetWindowTextW(hWnd, title.get());
-																																							 return S_OK;
-																																						 })
-																																						 .Get(),
-																																					 &token);
-																										 }
+												SetWindowTextW(hWnd, title.get());
+												return S_OK;
+											})
+											.Get(),
+										&token);
+								}
 
-																										 return S_OK;
-																									 })
-																									 .Get());
-														 return S_OK;
-													 })
-													 .Get());
+								return S_OK;
+							})
+							.Get());
+					return S_OK;
+				})
+				.Get());
 	}
 
 	HICON LoadIconFromFile(const std::wstring &filePath)
@@ -136,7 +143,6 @@ public:
 		WNDCLASSEXW wcex;
 
 		HICON hIcon = LoadIconFromFile(JoinToDllPath(L"icon.ico"));
- 
 
 		wcex.cbSize = sizeof(WNDCLASSEXW);
 		wcex.style = CS_HREDRAW | CS_VREDRAW;
@@ -164,7 +170,7 @@ public:
 		}
 
 		std::cout << "mulai membuka windows" << std::endl;
-		std::wstring r; 
+		std::wstring r;
 
 		// config.wclassname = wndClassnme;
 		// config.width = 800;

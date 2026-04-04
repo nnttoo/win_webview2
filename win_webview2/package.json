@@ -14,7 +14,8 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc",
-    "build_watch": "tsc --watch"
+    "build_watch": "tsc --watch",
+    "copy_dll": "tsx ./buildtools/copyDll.ts"
   },
   "author": "",
   "license": "ISC",
@@ -26,7 +27,7 @@
     "tsx": "^4.21.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@types/prompts": "^2.4.9",
     "typescript": "^6.0.2"
   }

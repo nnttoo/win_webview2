@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "build": "cmake-js compile",
-    "rebuild": "cmake-js rebuild",
-    "clean": "cmake-js clean"
+  "scripts": { 
+    "clean": "cmake-js clean",
+    "build:32": "cmake-js compile --arch=ia32 --out=./build/ia32",
+    "build:64": "cmake-js compile --arch=x64 --out=./build/x64",
+    "build:all": "npm run build:32 && npm run build:64"
   },
   "keywords": [],
   "author": "",

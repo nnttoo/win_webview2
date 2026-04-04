@@ -1,0 +1,14 @@
+{
+  "name": "exeopener",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build_64": "cmake --preset windows-64bit && cmake --build build/x64",
+    "build_32": "cmake --preset windows-32bit && cmake --build build/x86",
+    "build_all": "npm run build_64 && npm run build_32",
+    "clean": "rd /s /q build"
+  },
+  "author": "",
+  "license": "ISC"
+}

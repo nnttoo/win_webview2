@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "windows-32bit",
+      "displayName": "MinGW 32-bit",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/x86",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "C:/Cplus/mingw32/bin/g++.exe"
+      }
+    },
+    {
+      "name": "windows-64bit",
+      "displayName": "MinGW 64-bit",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/x64",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "C:/Cplus/mingw64/bin/g++.exe"
+      }
+    }
+  ]
+}
