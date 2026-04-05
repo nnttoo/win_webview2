@@ -4,11 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "node ./srcNode/app.js",
+    "deploy" : "node ./srcBuilder/deploy.js",
+    "clean_dist": "rimraf dist"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "win_webview2": "^1.1.6"
+  },
+   "devDependencies": {
+    "@types/node": "^25.5.2",
+    "@types/ws": "^8.18.1",
+    "rcedit": "^4.0.1",
+    "rimraf": "^6.1.3",
+    "sharp": "^0.33.5",
+    "sharp-ico": "^0.1.5"
   }
 }

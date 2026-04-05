@@ -1,0 +1,16 @@
+{
+  "name": "ww2_vanillajs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "node ./srcNode/app.js",
+    "deploy": "node ./srcBuilder/deploy.js",
+    "clean_dist": "rimraf dist"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "win_webview2": "^1.1.6"
+  }
+}
