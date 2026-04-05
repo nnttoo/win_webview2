@@ -11,42 +11,38 @@ Install the package via npm:
 
 ```sh
 npm install win_webview2
-```
- 
+``` 
 
-## Installation & CLI Tool  
-The win_webview2 CLI is your all-in-one tool for managing your project.
-## 1. Scaffolding (First time)  
 
-To download the example project and set up your boilerplate, run:
+## Interactive Project Management
+The win_webview2 CLI is designed to be your single point of control for the entire development lifecycle.
+## 1. Scaffolding (First time)
+To download the boilerplate and set up your project, simply run:
 
 ```sh
-
 npx win_webview2
 ```
 
+## 2. Develop, Watch, and Build
+After the initial setup, you don't need to remember complex commands. Just run the same command again:
 
-## 2. Development & Build (After setup)
 
-Once the project is downloaded, you can run the same command again inside your project folder:
 
 ```sh
-
 npx win_webview2
 ```
-
 
 What it does:
-It will trigger an interactive prompt selector, allowing you to choose common tasks such as:
+It opens an interactive menu where you can manage your project. You can simply use your arrow keys (↑/↓) to select common tasks:
 
-* Run Development/Watch Mode: To see changes in real-time.
-* Build Project: To compile your application for distribution.
-* And more: Any other project-specific scripts configured in the CLI.
+* Watch Mode: Run and see changes in real-time.
+* Build: Compile your application for production.
+* Dev Tools: Open debugging utilities.
 
-Instead of memorizing different scripts, you only need to remember one command. Our interactive CLI will guide you through building, running, and managing your WebView2 UI.
  
+ >Pro Tip: Just hit npx win_webview2, use the Up/Down arrows to pick your task,   
+ >and press Enter. It's that simple!
  
-
 ## Features
 
 * Built-in Express Server: Easily serve your static HTML folders.
