@@ -1,6 +1,0 @@
-{
-  "entry_point": "app.js",
-  "appname": "ww2_vanilla",
-  "outdir": "./dist",
-  "platform": "x64"
-}
