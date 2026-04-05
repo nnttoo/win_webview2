@@ -9,7 +9,7 @@ const dirnameTool_1 = require("../tsExport/dirnameTool");
 const promises_1 = require("node:fs/promises");
 const comment_json_1 = require("comment-json");
 const node_child_process_1 = require("node:child_process");
-function runCommand(command) {
+function runNpm(command) {
     try {
         const currentShell = process.platform === 'win32' ? 'cmd.exe' : '/bin/sh';
         let cmd = `npm run ${command}`;
@@ -37,7 +37,7 @@ async function readUserScripts() {
         ww2Choise["--" + kscript] = {
             description: name + " : " + cmd,
             fun: () => {
-                runCommand(kscript);
+                runNpm(kscript);
             }
         };
     }

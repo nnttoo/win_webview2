@@ -1,24 +1,15 @@
 {
-  "name": "openweb",
+  "name": "express",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build_node": "node ./builder.mjs",
-    "testrun": "npm run build_node && cd ./dist &&  node ./app.js",
-    "win_webview2": "win_webview2",
-    "run": "cd ./dist && openweb.exe"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
+    
     "win_webview2": "file:../../win_webview2"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.0",
-    "esbuild": "^0.24.2",
-    "fs-extra": "^11.3.0",
-    "tsc": "^2.0.4"
   }
 }

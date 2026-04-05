@@ -10,7 +10,7 @@ interface MyPkg{
     scripts? : {[key : string] : string} 
 }
 
-function runCommand(command : string) {
+function runNpm(command : string) {
   try { 
     const currentShell = process.platform === 'win32' ? 'cmd.exe' : '/bin/sh';
     let cmd = `npm run ${command}`;
@@ -43,7 +43,7 @@ export async function readUserScripts(){
         ww2Choise["--"+kscript] = {
             description :  name + " : " + cmd,
             fun : ()=>{
-                runCommand(kscript);
+                runNpm(kscript);
             }
         }
 
