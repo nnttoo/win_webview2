@@ -7,3 +7,4 @@
     - ✅ WindowController
 - Implenent ts NodeModuls
     - Builder  win_webview2\tsSrc\srcBuilder\ww2_buildercore.ts 
+- Create example/ww2_typescript compiler

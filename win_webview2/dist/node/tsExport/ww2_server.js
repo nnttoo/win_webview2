@@ -9,10 +9,12 @@ const winwebview2_1 = require("./winwebview2");
 async function ww2_CreateServer(arg) {
     let port = arg.port ? arg.port : 0;
     let app = (0, express_1.default)();
-    app.use(express_1.default.static('./assets/html'));
+    app.use(express_1.default.json());
+    app.use(express_1.default.static(arg.htmlfolder));
     arg.onExpressCreate(app);
     app.post("/ww2_post", async (req, res) => {
         let body = req.body;
+        console.log("ww2_post", body);
         let result = "";
         let err = "";
         try {

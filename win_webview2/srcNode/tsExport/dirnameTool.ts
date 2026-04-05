@@ -1,8 +1,9 @@
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
+import path, { dirname } from 'node:path';
+import { existsSync } from 'node:fs';
 
 
-export function getDirname() {
+export function getWw2Dirname() {
     // Trik deteksi lingkungan
     const _filename = typeof __filename !== 'undefined'
         ? __filename
@@ -13,5 +14,21 @@ export function getDirname() {
         ? __dirname
         : dirname(_filename);
 
-    return { _dirname, _filename };
+    let ww2ModulePath = path.join(_dirname,"../../../")
+
+    return { _dirname, _filename , ww2ModulePath};
 }
+
+export function findUserProjectRoot(currentDir : string = process.cwd()) { 
+
+    const packagePath = path.join(currentDir, 'package.json'); 
+    if (existsSync(packagePath)) {
+        return currentDir;
+    } 
+    const parentDir = path.dirname(currentDir);
+    if (parentDir === currentDir) {
+        return null;
+    } 
+    return findUserProjectRoot(parentDir);
+}
+ 

@@ -1,3 +1,5 @@
+import { getWw2Dirname } from "./dirnameTool";
+import { readConfig } from "./ww2_config";
 interface Ww2WebConfig {
     callback: (err: any, data: any) => void;
     wclassname: string;
@@ -29,4 +31,8 @@ interface Ww2Module {
     controlWindow: (arg: WW2ControlWindowsArg) => void;
 }
 export declare function getModule(): Promise<Ww2Module>;
+export declare function closeSplash(): Promise<void>;
 export * from "./ww2_server";
+export { findUserProjectRoot } from "./dirnameTool";
+export { readConfig };
+export { getWw2Dirname };

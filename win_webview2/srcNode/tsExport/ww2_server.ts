@@ -40,18 +40,20 @@ export async function ww2_CreateServer(arg: {
         isKiosk: boolean,
         isMaximize: boolean,
         isDebug: boolean,
-    }
+    },
+    htmlfolder : string
 }) {
     let port = arg.port ? arg.port : 0;
 
-    let app = express();
-    app.use(express.static('./assets/html'));
+    let app = express(); 
+    app.use(express.json());
+    app.use(express.static(arg.htmlfolder));
     arg.onExpressCreate(app);
 
     app.post("/ww2_post", async (req, res) => {
 
         let body = req.body as PostData;
-
+        console.log("ww2_post", body);
         let result = "";
         let err = "";
         try {

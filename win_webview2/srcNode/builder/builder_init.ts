@@ -1,13 +1,13 @@
 import { existsSync } from "fs";
 import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
-import { getDirname } from "../tsExport/dirnameTool";
+import { getWw2Dirname } from "../tsExport/dirnameTool";
 import path from "path";
 import { exec } from "child_process";
 import { ConfigWW2 } from "../tsExport/ww2_config";
  
 
 const jsonConfigFilePath = "./win_webview2.json";
-let mdirname = getDirname();
+let mdirname = getWw2Dirname();
 
 let ww2ModulePath = path.join(mdirname._dirname, "../../../");
 
@@ -16,8 +16,7 @@ export async function ww2Init() {
         entry_point: "app.js",
         appname: "openweb",
         outdir: "./dist",
-        platform: 'x64',
-        icon_path : "icon.png"
+        platform: 'x64', 
     }
 
     let objstr = JSON.stringify(ww2Config, null, 2);
@@ -50,26 +49,6 @@ export async function ww2Init() {
     } catch (error) {
 
     }
-    await writeFile(
-        path.join("./assets", "/html/index.html"),
-        `
- <!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <link rel="stylesheet" href="/bootstrap.css?v=9">
-    <title>${ww2Config.appname}</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-
-</head>
-<body>
-<div id="app"></div>
-<script src="/app_browser.js"></script>
-</body>
-</html>       
-        `
-    )
+     
 
 }

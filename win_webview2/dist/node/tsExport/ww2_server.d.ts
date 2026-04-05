@@ -31,5 +31,6 @@ export declare function ww2_CreateServer(arg: {
         isMaximize: boolean;
         isDebug: boolean;
     };
+    htmlfolder: string;
 }): Promise<void>;
 export {};

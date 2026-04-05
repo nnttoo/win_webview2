@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { getDirname } from "./dirnameTool";
+import { getWw2Dirname } from "./dirnameTool";
 import { ConfigWW2, readConfig } from "./ww2_config";
 
 interface Ww2WebConfig {
@@ -44,7 +44,7 @@ interface Ww2Module {
 
 
 export async function getModule() {
-    let dirname = getDirname();
+    let dirname = getWw2Dirname();
 
     let filepath = path.join(
         dirname._dirname,
@@ -54,6 +54,7 @@ export async function getModule() {
     if (!existsSync(filepath)) {
 
         let config = await readConfig();
+        if(config == null) throw "user config null";
         filepath = path.join(dirname._dirname, `../../../win_lib/${config.platform}/ww2_addon.node`);
 
     }
@@ -62,4 +63,16 @@ export async function getModule() {
     return myAddon;
 }
 
+export function closeSplash(){
+    return getModule().then((module)=>{
+        module.controlWindow({
+            controlcmd : "close",
+            wndClassName : "mysplashclassname"
+        })
+    });
+}
+
 export * from "./ww2_server"
+export {findUserProjectRoot } from "./dirnameTool"
+export {readConfig} ;
+export {getWw2Dirname}

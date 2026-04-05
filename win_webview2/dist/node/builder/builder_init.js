@@ -9,7 +9,7 @@ const promises_1 = require("fs/promises");
 const dirnameTool_1 = require("../tsExport/dirnameTool");
 const path_1 = __importDefault(require("path"));
 const jsonConfigFilePath = "./win_webview2.json";
-let mdirname = (0, dirnameTool_1.getDirname)();
+let mdirname = (0, dirnameTool_1.getWw2Dirname)();
 let ww2ModulePath = path_1.default.join(mdirname._dirname, "../../../");
 async function ww2Init() {
     let ww2Config = {
@@ -17,7 +17,6 @@ async function ww2Init() {
         appname: "openweb",
         outdir: "./dist",
         platform: 'x64',
-        icon_path: "icon.png"
     };
     let objstr = JSON.stringify(ww2Config, null, 2);
     if (!(0, fs_1.existsSync)(jsonConfigFilePath)) {
@@ -37,22 +36,4 @@ async function ww2Init() {
     }
     catch (error) {
     }
-    await (0, promises_1.writeFile)(path_1.default.join("./assets", "/html/index.html"), `
- <!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <link rel="stylesheet" href="/bootstrap.css?v=9">
-    <title>${ww2Config.appname}</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-
-</head>
-<body>
-<div id="app"></div>
-<script src="/app_browser.js"></script>
-</body>
-</html>       
-        `);
 }
