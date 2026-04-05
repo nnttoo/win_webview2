@@ -27,7 +27,27 @@ let ww2Choise = {
         }
     }
 };
+async function fetchFromList() {
+    try {
+        console.log("get list example");
+        let url = "https://raw.githubusercontent.com/nnttoo/win_webview2/refs/heads/master/example/listexample.json";
+        let txt = await fetch(url);
+        let content = await txt.text();
+        let obj = JSON.parse(content);
+        for (let item of obj) {
+            ww2Choise[item.path] = {
+                description: item.desctiption,
+                fun: () => {
+                    runCommand(`npx degit nnttoo/win_webview2/example/${item.path}#master ${item.path}`);
+                }
+            };
+        }
+    }
+    catch (error) {
+    }
+}
 async function ww2Init() {
+    await fetchFromList();
     const response = await (0, prompts_1.default)({
         type: 'select',
         name: 'menu',
