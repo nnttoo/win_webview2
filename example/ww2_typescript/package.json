@@ -1,0 +1,33 @@
+{
+  "name": "express_typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "tsx ./srcNode/app.ts",
+    "deploy": "npm run build_browser && npm run build_server &&  tsx ./srcBuilder/builder_deploy.ts",
+    "clean_dist": "rimraf dist",
+    "win_webview2": "npx win_webview2",
+    "build_server": "tsx ./srcBuilder/build_server.ts",
+    "build_server_watch": "npm run build_server -- --watch",
+    "build_browser": "tsx ./srcBuilder/build_browser.ts",
+    "build_browser_watch": "npm run build_browser -- --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.28.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "win_webview2": "file:../../win_webview2",
+    "ws": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "@types/ws": "^8.18.1",
+    "rcedit": "^4.0.1",
+    "rimraf": "^6.1.3",
+    "sharp": "^0.33.5",
+    "sharp-ico": "^0.1.5"
+  }
+}

@@ -1,0 +1,54 @@
+import { existsSync } from "fs";
+import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
+import { getWw2Dirname } from "../tsExport/dirnameTool";
+import path from "path";
+import { exec } from "child_process";
+import { ConfigWW2 } from "../tsExport/ww2_config";
+ 
+
+const jsonConfigFilePath = "./win_webview2.json";
+let mdirname = getWw2Dirname();
+
+let ww2ModulePath = path.join(mdirname._dirname, "../../../");
+
+export async function ww2Init() {
+    let ww2Config: ConfigWW2 = {
+        entry_point: "app.js",
+        appname: "openweb",
+        outdir: "./dist",
+        platform: 'x64', 
+    }
+
+    let objstr = JSON.stringify(ww2Config, null, 2);
+    if (!existsSync(jsonConfigFilePath)) {
+
+        await writeFile(jsonConfigFilePath, objstr);
+    } else {
+        let str = await readFile(jsonConfigFilePath, "utf-8");
+        ww2Config = JSON.parse(str);
+    }
+
+    console.log(ww2Config);
+
+
+    if (!existsSync("./assets")) {
+
+        await mkdir("./assets");
+    }
+
+
+    await copyFile(
+        path.join(ww2ModulePath, "win_lib/x64/splash.png"),
+        path.join("./assets/icon.png")
+    );
+
+
+    try {
+
+        await mkdir(path.join("./assets", "html"));
+    } catch (error) {
+
+    }
+     
+
+}

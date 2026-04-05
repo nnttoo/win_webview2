@@ -3,5 +3,5 @@
   "appname": "openweb",
   "icon_path": "./icon.png",
   "outdir": "./dist",
-  "platform" : "Win32"
+  "platform" : "x64"
 }

@@ -8,25 +8,38 @@
   "description": "",
   "main": "./tsDist/tsExport/winwebview2.js",
   "types": "./tsDist/tsExport/winwebview2.d.ts",
+  "exports": {
+    "./browser": {
+      "types": "./dist/browser/ww2_browser.d.ts",
+      "default": "./dist/browser/ww2_browser.js"
+    },
+    "./node": {
+      "types": "./dist/node/tsExport/winwebview2.dt.ts",
+      "default": "./dist/node/tsExport/winwebview2.js"
+    }
+  },
   "bin": {
     "win_webview2": "tsDistRun.js"
   },
   "type": "commonjs",
   "scripts": {
-    "build": "tsc",
-    "build_watch": "tsc --watch"
+    "build": "tsc -p ./srcNode/tsconfig.json",
+    "build_watch": "npm run build -- --watch",
+    "build_browser": "tsc -p ./srcBrowser/tsconfig.json",
+    "build_browser_watch": "npm run build_browser -- --watch",
+    "copy_dll": "tsx ./buildtools/copyDll.ts" 
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "comment-json": "^4.6.2",
+    "express": "^5.2.1",
     "prompts": "^2.4.2",
-    "rcedit": "^4.0.1",
-    "sharp": "^0.33.5",
-    "sharp-ico": "^0.1.5",
     "tsx": "^4.21.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.2",
     "@types/prompts": "^2.4.9",
     "typescript": "^6.0.2"
   }
