@@ -12,22 +12,38 @@ Install the package via npm:
 ```sh
 npm install win_webview2
 ```
+ 
 
-## Quick Start (Scaffold Example Project)  
-If you want to see how it works immediately, you can download and run the example project using the following command:
+## Installation & CLI Tool  
+The win_webview2 CLI is your all-in-one tool for managing your project.
+## 1. Scaffolding (First time)  
+
+To download the example project and set up your boilerplate, run:
 
 ```sh
+
 npx win_webview2
 ```
 
 
-This will set up a boilerplate project so you can start building your UI right away.  
+## 2. Development & Build (After setup)
+
+Once the project is downloaded, you can run the same command again inside your project folder:
+
+```sh
+
+npx win_webview2
+```
 
 
+What it does:
+It will trigger an interactive prompt selector, allowing you to choose common tasks such as:
 
-
-
-
+* Run Development/Watch Mode: To see changes in real-time.
+* Build Project: To compile your application for distribution.
+* And more: Any other project-specific scripts configured in the CLI.
+ 
+ 
 
 ## Features
 
