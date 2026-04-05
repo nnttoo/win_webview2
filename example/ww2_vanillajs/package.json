@@ -5,15 +5,15 @@
   "main": "index.js",
   "scripts": {
     "run": "node ./srcNode/app.js",
-    "deploy" : "node ./srcBuilder/deploy.js",
+    "deploy": "node ./srcBuilder/deploy.js",
     "clean_dist": "rimraf dist"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "win_webview2": "^1.1.6"
+    "win_webview2": "^1.1.7"
   },
-   "devDependencies": {
+  "devDependencies": {
     "@types/node": "^25.5.2",
     "@types/ws": "^8.18.1",
     "rcedit": "^4.0.1",
