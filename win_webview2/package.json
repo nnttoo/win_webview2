@@ -27,12 +27,13 @@
     "build_watch": "npm run build -- --watch",
     "build_browser": "tsc -p ./srcBrowser/tsconfig.json",
     "build_browser_watch": "npm run build_browser -- --watch",
-    "copy_dll": "tsx ./buildtools/copyDll.ts" 
+    "copy_dll": "tsx ./buildtools/copyDll.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "comment-json": "^4.6.2",
+    "degit": "^2.8.4",
     "express": "^5.2.1",
     "prompts": "^2.4.2",
     "tsx": "^4.21.0"
