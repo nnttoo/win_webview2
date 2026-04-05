@@ -1,52 +1,185 @@
-# Win Webview2  
+ 
+## win_webview2 
 
-## npm install
+A lightweight Node.js module to build Windows desktop UIs using Microsoft WebView2. A minimal and tiny alternative to Electron for developers who need a simple web-based interface without the heavy Chromium overhead 
+ 
 
-```npm i win_webview2```
+
+## Installation
+Install the package via npm:
 
 
-Win Webview2 is a GUI toolkit for building desktop applications with Node.js. It is similar to Electron but significantly smaller because Win Webview2 utilizes Microsoft WebView2, which is already installed on Windows 10 and later versions.  
+```sh
+npm install win_webview2
+``` 
 
-## Building the Application  
 
-Run the following command:  
+## Interactive Project Management
+The win_webview2 CLI is designed to be your single point of control for the entire development lifecycle.
+## 1. Scaffolding (First time)
+To download the boilerplate and set up your project, simply run:
 
 ```sh
 npx win_webview2
-```  
-
-A menu will appear in the terminal with the following options:  
-- `init_webview2` – Creates a configuration file in JSON format.  
-- `deploy` – Builds the application from your Node.js project.  
-
-## Example Configuration File  
-
-```json
-{
-  "entry_point": "app.js",
-  "appname": "openweb",
-  "icon_path": "./icon.png",
-  "outdir": "./dist"
-}
 ```
 
-## Open Webview Frome Node
+## 2. Develop, Watch, and Build
+After the initial setup, you don't need to remember complex commands. Just run the same command again:
 
-```js
-import { openDialogFile, openDialogFolder, openWeb } from 'win_webview2';
 
-function openWebview(address) {
-  openWeb({
-        height : 400,
+
+```sh
+npx win_webview2
+```
+
+What it does:
+It opens an interactive menu where you can manage your project. You can simply use your arrow keys (↑/↓) to select common tasks:
+
+* Watch Mode: Run and see changes in real-time.
+* Build: Compile your application for production.
+* Dev Tools: Open debugging utilities.
+
+ 
+ >Pro Tip: Just hit npx win_webview2, use the Up/Down arrows to pick your task,   
+ >and press Enter. It's that simple!
+ 
+## Features
+
+* Built-in Express Server: Easily serve your static HTML folders.
+* Native UI Management: Control window states (maximize, minimize, move, resize).
+* Native Dialogs: Access Windows Open File and Open Folder dialogs directly from the browser.
+* Low-level API: Direct access to the native Node.js addon.
+ 
+
+
+## Basic Usage (Server-side)
+
+Use ww2_CreateServer to host your HTML files and initialize the WebView2 window.
+
+```ts
+
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { closeSplash, ww2_CreateServer } from "win_webview2/node"
+// Determine your HTML folder path
+
+let htmlFolder = (() => {
+    let result = path.join(__dirname, "html");
+    if (!existsSync(result)) {
+        result = path.join(process.cwd(), "assets/lib/html")
+    }
+    return result;
+})();
+// Create the server and UI
+
+ww2_CreateServer({
+    port: 0, // 0 for auto-assign
+    uiConfig: {
         width: 800,
-        kiosk : false,
-        maximize : false,
-        title : "auto",
-        url : address, 
-        isDebugMode : false
- }) 
+        height: 400,
+        title: "Ww2 UI",
+        wclassname: "myuiclass",
+        isDebug: true,
+        isKiosk: false,
+        isMaximize: false,
+    },
+    onExpressCreate: (app) => {
+        // You can add custom express middlewares here
+    },
+    htmlfolder: htmlFolder
+});
+// Close splash screen if active
+closeSplash();
+
+```
+
+
+
+------------------------------
+## Browser Integration (Client-side)
+Once the server is running, you can interact with the native Windows layer using callWw2.
+
+```ts
+
+import { callWw2 } from "win_webview2/browser"
+// Open File Dialog 
+const openFile = async () => {
+    let r = await callWw2({
+        openFileDialog: {
+            filter: "All Files (*.*)|*.*",
+            ownerClassName: "myuiclass",
+        }
+    });
+    console.log("Selected file:", r.result);
+};
+// Window Controls (Close, Move, Resize, Max/Min) 
+const closeWindow = async () => {
+    
+    await callWw2({
+        controlWindow: {
+            controlcmd: "close",
+            wndClassName: "myuiclass"
+        }
+    });
+};
+
+const resizeWindow = async () => {
+    await callWw2({
+        controlWindow: {
+            controlcmd: "resize",
+            wndClassName: "myuiclass",
+            width: 800,
+            height: 700
+        }
+    });
+};
+
+```
+
+------------------------------
+
+## Low-Level API
+If you need direct access to the native module (.node addon), you can use getModule.
+
+```ts
+
+import { getModule } from "win_webview2/node";
+async function runLowLevel() {
+    const ww2 = await getModule();
+    
+    // Manual window control
+    ww2.controlWindow({
+        wndClassName: "myuiclass",
+        controlcmd: "maximize"
+    });
 }
 
 ```
 
-look at github examples folder for detail
+
+
+## Module Interfaces
+
+```ts
+
+export interface WW2ControlWindowsArg {
+    wndClassName: string;
+    controlcmd: "close" | "move" | "maximize" | "minimize" | "resize" | "check";
+    left?: number;
+    top?: number;
+    height?: number;
+    width?: number;
+}
+interface Ww2Module {
+    openWeb: (arg: Ww2WebConfig) => void;
+    openFileDialog: (arg: WW2FileDialogArg) => void;
+    openFolderDialog: (arg: WW2FileDialogArg) => void;
+    controlWindow: (arg: WW2ControlWindowsArg) => void;
+}
+
+```
+
+------------------------------
+## License
+MIT
+
