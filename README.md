@@ -42,6 +42,8 @@ It will trigger an interactive prompt selector, allowing you to choose common ta
 * Run Development/Watch Mode: To see changes in real-time.
 * Build Project: To compile your application for distribution.
 * And more: Any other project-specific scripts configured in the CLI.
+
+Instead of memorizing different scripts, you only need to remember one command. Our interactive CLI will guide you through building, running, and managing your WebView2 UI.
  
  
 
@@ -51,13 +53,9 @@ It will trigger an interactive prompt selector, allowing you to choose common ta
 * Native UI Management: Control window states (maximize, minimize, move, resize).
 * Native Dialogs: Access Windows Open File and Open Folder dialogs directly from the browser.
 * Low-level API: Direct access to the native Node.js addon.
+ 
 
-------------------------------
-## Installation
 
-npm install win_webview2
-
-------------------------------
 ## Basic Usage (Server-side)
 
 Use ww2_CreateServer to host your HTML files and initialize the WebView2 window.
