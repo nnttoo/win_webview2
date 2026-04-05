@@ -110,6 +110,6 @@ function sleep(n : number){
     console.log("waiting");
     await sleep(2000);
     console.log("control windows");
-    controlWindow();
+    //controlWindow();
 })();
 

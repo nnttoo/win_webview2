@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",
-    "declaration": true,
-    "rootDir": "./tsSrc",
-    "outDir": "./tsDist",
+    "module": "nodenext",
+    "declaration": true,  
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
-  "include": ["tsSrc"]
+  "include": ["./tsSrc/**/*"]
 }

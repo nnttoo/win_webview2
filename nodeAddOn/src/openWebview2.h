@@ -104,21 +104,21 @@ public:
 										.Get(),
 									&token);
 
-								if (config.title == L"auto")
-								{
-									this->webview->add_DocumentTitleChanged(
-										Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-											[this, hWnd](ICoreWebView2 *webview, IUnknown *args) -> HRESULT
-											{
-												wil::unique_cotaskmem_string title;
-												this->webview->get_DocumentTitle(&title);
+								// if (config.title == L"auto")
+								// {
+								// 	this->webview->add_DocumentTitleChanged(
+								// 		Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+								// 			[this, hWnd](ICoreWebView2 *webview, IUnknown *args) -> HRESULT
+								// 			{
+								// 				wil::unique_cotaskmem_string title;
+								// 				this->webview->get_DocumentTitle(&title);
 
-												SetWindowTextW(hWnd, title.get());
-												return S_OK;
-											})
-											.Get(),
-										&token);
-								}
+								// 				SetWindowTextW(hWnd, title.get());
+								// 				return S_OK;
+								// 			})
+								// 			.Get(),
+								// 		&token);
+								// }
 
 								return S_OK;
 							})
@@ -168,8 +168,8 @@ public:
 
 			return;
 		}
-
-		std::cout << "mulai membuka windows" << std::endl;
+ 
+		std::wcout << config.title << std::endl;
 		std::wstring r;
 
 		// config.wclassname = wndClassnme;
@@ -236,7 +236,11 @@ public:
 			CREATESTRUCT *cs = (CREATESTRUCT *)lParam;
 			MyWebView *self = (MyWebView *)cs->lpCreateParams;
 			SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)self);
-
+			// WAJIB: Panggil DefWindowProcW dulu agar judul & frame diproses sistem
+			if (!DefWindowProcW(hWnd, message, wParam, lParam))
+			{
+				return FALSE;
+			}
 			return TRUE;
 		}
 		case WM_SIZE:
@@ -251,7 +255,7 @@ public:
 			PostQuitMessage(0);
 			break;
 		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
+			return DefWindowProcW(hWnd, message, wParam, lParam);
 			break;
 		}
 

@@ -14,8 +14,13 @@ function debugDir(dirPath: string) {
 
     let rootPath = path.join(__dirname, "../../");
     let copyFromRoot = async (src: string, target: string) => {
-        result += "\n" + target;
-        await copyFile(path.join(rootPath, src), path.join(rootPath, target));
+        try {
+
+            result += "\n" + target;
+            await copyFile(path.join(rootPath, src), path.join(rootPath, target));
+        } catch (error) {
+
+        }
     }
 
     try {

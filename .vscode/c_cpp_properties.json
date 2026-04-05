@@ -5,8 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/nodeAddOn/node_modules/node-addon-api",
-                "${workspaceFolder}/nodeAddOn/external_deps/wil-src/include",
-                "${workspaceFolder}/nodeAddOn/external_deps/webview2-src/build/native/include"
+                "${workspaceFolder}/nodeAddOn/build/ia32/_deps/wil-src/include",
+                "${workspaceFolder}/nodeAddOn/build/ia32/_deps/webview2-src/build/native/include"
             ],
             "defines": [
                 "_DEBUG",
