@@ -19,7 +19,7 @@
     "esbuild": "^0.28.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
-    "win_webview2": "^1.1.6",
+    "win_webview2": "file:../../win_webview2",
     "ws": "^8.20.0"
   },
   "devDependencies": {
