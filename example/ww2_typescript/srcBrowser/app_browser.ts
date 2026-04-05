@@ -7,7 +7,7 @@ import { callWw2 } from "win_webview2/browser"
         return document.querySelector(selector) as HTMLButtonElement;
     }
     function ipt(selector: string) {
-        return btn(selector) as HTMLInputElement;
+        return btn(selector) as any  as HTMLInputElement;
     }
 
     btn("#openfdialog").onclick = async () => {
