@@ -45,7 +45,6 @@ async function buildForServer() {
         await response.menu();
     }
 }
-console.log("ww2 version : v6 \n\n");
 const args = process.argv.slice(2);
 if (args.length > 0) {
     let argument = args[0];

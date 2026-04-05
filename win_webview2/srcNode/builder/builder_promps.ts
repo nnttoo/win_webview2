@@ -62,8 +62,7 @@ export async function buildForServer() {
 
        await  response.menu();
     }
-}
-console.log("ww2 version : v6 \n\n");
+} 
 const args = process.argv.slice(2);
 
 
