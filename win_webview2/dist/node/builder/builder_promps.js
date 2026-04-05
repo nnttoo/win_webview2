@@ -8,7 +8,7 @@ const prompts_1 = __importDefault(require("prompts"));
 const builder_init_1 = require("./builder_init");
 const userExec_1 = require("./userExec");
 let ww2Choise = {
-    "init_ww2": {
+    "init_win_webview2": {
         description: "init win_webview2",
         fun: async () => {
             await (0, builder_init_1.ww2Init)();

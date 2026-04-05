@@ -12,7 +12,7 @@ export type WW2Choise = { [key: string]: ChoiseItem }
 
 let ww2Choise: WW2Choise = {
 
-    "init_ww2": {
+    "init_win_webview2": {
         description: "init win_webview2",
         fun: async () => {
             await ww2Init();
