@@ -6,12 +6,13 @@
   "scripts": {
     "run": "node ./srcNode/app.js",
     "deploy": "node ./srcBuilder/deploy.js",
-    "clean_dist": "rimraf dist"
+    "clean_dist": "rimraf dist",
+    "npm_reinstall" : "rimraf node_modules && npm install"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "win_webview2": "^1.1.10"
+    "win_webview2": "^1.1.14"
   },
   "devDependencies": {
     "@types/node": "^25.5.2",

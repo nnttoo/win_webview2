@@ -11,7 +11,8 @@
     "build_server": "tsx ./srcBuilder/build_server.ts",
     "build_server_watch": "npm run build_server -- --watch",
     "build_browser": "tsx ./srcBuilder/build_browser.ts",
-    "build_browser_watch": "npm run build_browser -- --watch"
+    "build_browser_watch": "npm run build_browser -- --watch",
+    "npm_reinstall" : "rimraf node_modules && npm install"
   },
   "author": "",
   "license": "ISC",

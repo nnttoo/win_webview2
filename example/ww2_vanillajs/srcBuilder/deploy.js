@@ -1,6 +1,6 @@
  //@ts-check
 
-const { getWw2Dirname, findUserProjectRoot, readConfig } = require("win_webview2/node");
+const {   findUserProjectRoot, readConfig, getWWVNodeModuleFolder } = require("win_webview2/node");
 const path = require("path");
 const { existsSync } = require("fs");
 const { mkdir, copyFile, writeFile } = require("fs/promises");
@@ -28,8 +28,8 @@ function runCommand(command) {
 
 async function deploy() {
     console.log("start deploy");
-
-    let ww2Dirname = getWw2Dirname();
+    
+    let wwvNodeModulePath = getWWVNodeModuleFolder();
 
 
     let userRootProject = findUserProjectRoot();
@@ -110,10 +110,9 @@ async function deploy() {
     )
 
     await (async () => {
-        console.log("copy runner exe");
-        let modulePath = ww2Dirname.ww2ModulePath;
+        console.log("copy runner exe"); 
         let runnerPath = path.join(
-            modulePath,
+            wwvNodeModulePath,
             "win_lib",
             ww2ConfigObj.platform,
             "exeOpenner.exe"
@@ -176,7 +175,7 @@ async function deploy() {
         let copyFromWinLib = async (fileName) => {
             console.log("copy node modules " + fileName);
             let nodePath = path.join(
-                ww2Dirname.ww2ModulePath,
+                wwvNodeModulePath,
                 "win_lib",
                 ww2ConfigObj.platform,
                 fileName
@@ -244,5 +243,8 @@ async function deploy() {
     let libFolder = path.resolve(path.join(folderDist,"lib"));
 
     runCommand(`cd "${libFolder}" && npm install `);
+
+    console.log("copy icon folder")
+     
 }
 deploy();

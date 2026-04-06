@@ -4,13 +4,14 @@ import path from "node:path";
 import sharp from "sharp"
 import ico from "sharp-ico"
 import rcedit from "rcedit";
-import { findUserProjectRoot, getWw2Dirname, readConfig } from "win_webview2/node";
+import { findUserProjectRoot,   getWWVNodeModuleFolder, readConfig } from "win_webview2/node";
 import { copyDir } from "./build_copyDir";
+import pkgJson from "../package.json"
 
 async function deploy() {
     console.log("start deploy");
 
-    let ww2Dirname = getWw2Dirname();
+    let wwvNodeModulePath = getWWVNodeModuleFolder();
 
 
     let userRootProject = findUserProjectRoot();
@@ -87,10 +88,9 @@ async function deploy() {
     )
 
     await (async () => {
-        console.log("copy runner exe");
-        let modulePath = ww2Dirname.ww2ModulePath;
+        console.log("copy runner exe"); 
         let runnerPath = path.join(
-            modulePath,
+            wwvNodeModulePath,
             "win_lib",
             ww2ConfigObj.platform,
             "exeOpenner.exe"
@@ -149,7 +149,7 @@ async function deploy() {
         let copyFromWinLib = async (fileName: string) => {
             console.log("copy node modules " + fileName);
             let nodePath = path.join(
-                ww2Dirname.ww2ModulePath,
+                wwvNodeModulePath,
                 "win_lib",
                 ww2ConfigObj.platform,
                 fileName
@@ -184,6 +184,15 @@ async function deploy() {
         await rcedit(runnerOutPath, {
             icon: iconPath,
         });
+    })();
+
+    await (async ()=>{
+        console.log("create package json"); 
+        pkgJson.devDependencies = {} as any;
+
+        let str = JSON.stringify(pkgJson,null, 2);
+        let outPath = path.join(folderDist,"/lib/package.json");
+        await writeFile(outPath,str);
     })();
 
 }

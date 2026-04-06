@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ww2Init = ww2Init;
-const dirnameTool_1 = require("../tsExport/dirnameTool");
 const child_process_1 = require("child_process");
 const prompts_1 = __importDefault(require("prompts"));
 function runCommand(command) {
@@ -18,7 +17,6 @@ function runCommand(command) {
     }
 }
 const jsonConfigFilePath = "./win_webview2.json";
-let mdirname = (0, dirnameTool_1.getWw2Dirname)();
 let ww2Choise = {
     "ww2_typescript": {
         description: "init win_webview2",

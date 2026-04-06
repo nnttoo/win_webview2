@@ -1,7 +1,6 @@
 import { exec } from "node:child_process";
 import { copyFile, mkdir } from "node:fs/promises";
-import path from "node:path";
-import { getWw2Dirname } from "../tsExport/dirnameTool";
+import path from "node:path"; 
 
 function debugDir(dirPath: string) {
     exec("cd " + dirPath + "&& dir", (s, o) => {
@@ -13,15 +12,13 @@ function debugDir(dirPath: string) {
 
     let result = "\n";
 
-    let dirname = getWw2Dirname();
-
-    let ww2ModulePath = dirname.ww2ModulePath;
+    let ww2SourcePath = path.join(__dirname,"../");
  
     let copyFromRoot = async (src: string, target: string) => {
         try {
 
-            let rootPath = path.join(ww2ModulePath,"../");
-            console.log("ModulePath : ", ww2ModulePath);
+            let rootPath = path.join(ww2SourcePath,"../");
+            console.log("ModulePath : ", ww2SourcePath);
             console.log("rootPath : ", rootPath);
             result += "\n" + target;
             await copyFile(path.join(rootPath, src), path.join(rootPath, target));
@@ -31,13 +28,13 @@ function debugDir(dirPath: string) {
     }
     
     try{ 
-        await mkdir(path.join(ww2ModulePath, "win_lib"));
+        await mkdir(path.join(ww2SourcePath, "win_lib"));
 
     } catch{
 
     }
     try{ 
-        await mkdir(path.join(ww2ModulePath, "win_lib/Win32"));
+        await mkdir(path.join(ww2SourcePath, "win_lib/Win32"));
 
     } catch{
 
@@ -45,7 +42,7 @@ function debugDir(dirPath: string) {
 
     try {
 
-        await mkdir(path.join(ww2ModulePath, "win_lib/x64"));
+        await mkdir(path.join(ww2SourcePath, "win_lib/x64"));
     } catch (error) {
 
     }

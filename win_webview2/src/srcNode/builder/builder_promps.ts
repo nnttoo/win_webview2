@@ -2,6 +2,7 @@
 import prompts from 'prompts'; 
 import { ww2Init } from './builder_init';
 import { readUserScripts } from './userExec';
+import { getWWvVersion } from './versiontool';
 
 interface ChoiseItem {
     fun: () => any;
@@ -28,6 +29,9 @@ type promChoise = {
 }
 
 export async function buildForServer() {
+    let version = await getWWvVersion();
+    console.log("win_webview2 : " + version);
+
     let userChoise = await readUserScripts();
     if(userChoise != null){
         ww2Choise = {

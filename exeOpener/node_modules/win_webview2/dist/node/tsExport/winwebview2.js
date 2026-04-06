@@ -17,24 +17,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWw2Dirname = exports.readConfig = exports.findUserProjectRoot = void 0;
+exports.getWWVNodeModuleFolder = exports.readConfig = exports.findUserProjectRoot = void 0;
 exports.getModule = getModule;
 exports.closeSplash = closeSplash;
 const node_fs_1 = require("node:fs");
 const node_path_1 = __importDefault(require("node:path"));
 const dirnameTool_1 = require("./dirnameTool");
-Object.defineProperty(exports, "getWw2Dirname", { enumerable: true, get: function () { return dirnameTool_1.getWw2Dirname; } });
+Object.defineProperty(exports, "getWWVNodeModuleFolder", { enumerable: true, get: function () { return dirnameTool_1.getWWVNodeModuleFolder; } });
 const ww2_config_1 = require("./ww2_config");
 Object.defineProperty(exports, "readConfig", { enumerable: true, get: function () { return ww2_config_1.readConfig; } });
 async function getModule() {
-    let dirname = (0, dirnameTool_1.getWw2Dirname)();
-    let filepath = node_path_1.default.join(dirname._dirname, "./ww2_addon.node");
-    if (!(0, node_fs_1.existsSync)(filepath)) {
+    let addOnName = "ww2_addon.node";
+    let filepath = (() => {
+        let userFolder = (0, dirnameTool_1.findUserProjectRoot)();
+        if (userFolder == null)
+            return null;
+        let r = node_path_1.default.join(userFolder, addOnName);
+        if (!(0, node_fs_1.existsSync)(r))
+            return null;
+        return r;
+    })();
+    filepath = await (async () => {
+        if (filepath != null)
+            return filepath;
+        let wwvModulePath = (0, dirnameTool_1.getWWVNodeModuleFolder)();
         let config = await (0, ww2_config_1.readConfig)();
         if (config == null)
-            throw "user config null";
-        filepath = node_path_1.default.join(dirname._dirname, `../../../win_lib/${config.platform}/ww2_addon.node`);
-    }
+            return null;
+        let r = node_path_1.default.join(wwvModulePath, `win_lib/${config.platform}/ww2_addon.node`);
+        return r;
+    })();
+    if (filepath == null)
+        throw "file not found";
     let myAddon = require(filepath);
     return myAddon;
 }

@@ -13,15 +13,11 @@ export type ConfigWW2 = {
 
 const jsonConfigFilePath = "./win_webview2.json";
 export async function readConfig() {
-    let jsonPath = path.join(__dirname, jsonConfigFilePath);
-    if (!existsSync(jsonPath)) {
-        let userDir = findUserProjectRoot();
-        if (userDir == null) return null; 
-        jsonPath = path.join(userDir, jsonConfigFilePath); 
-    }
+    let userDir = findUserProjectRoot();
+    if (userDir == null) throw "readConfig() => findProjectUser failed"
 
-
+    let jsonPath = path.join(userDir, jsonConfigFilePath); 
     let str = await readFile(jsonPath);
-    let jsonObj = JSON.parse(str.toString()); 
+    let jsonObj = JSON.parse(str.toString());
     return jsonObj as ConfigWW2;
 }

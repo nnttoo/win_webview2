@@ -1,4 +1,4 @@
-import { getWw2Dirname } from "./dirnameTool";
+import { getWWVNodeModuleFolder } from "./dirnameTool";
 import { readConfig } from "./ww2_config";
 interface Ww2WebConfig {
     callback: (err: any, data: any) => void;
@@ -35,4 +35,4 @@ export declare function closeSplash(): Promise<void>;
 export * from "./ww2_server";
 export { findUserProjectRoot } from "./dirnameTool";
 export { readConfig };
-export { getWw2Dirname };
+export { getWWVNodeModuleFolder };

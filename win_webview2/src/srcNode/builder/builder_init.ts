@@ -1,9 +1,5 @@
-import { existsSync } from "fs";
-import { copyFile, mkdir, readFile, writeFile } from "fs/promises";
-import { getWw2Dirname } from "../tsExport/dirnameTool";
-import path from "path";
-import { exec, execSync } from "child_process";
-import { ConfigWW2 } from "../tsExport/ww2_config";
+
+import { exec, execSync } from "child_process"; 
 import prompts from "prompts";
 
 
@@ -17,8 +13,7 @@ function runCommand(command: string) {
     }
 }
 
-const jsonConfigFilePath = "./win_webview2.json";
-let mdirname = getWw2Dirname();
+const jsonConfigFilePath = "./win_webview2.json"; 
 
 
 interface ChoiseItem {

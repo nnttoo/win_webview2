@@ -7,6 +7,7 @@ exports.buildForServer = buildForServer;
 const prompts_1 = __importDefault(require("prompts"));
 const builder_init_1 = require("./builder_init");
 const userExec_1 = require("./userExec");
+const versiontool_1 = require("./versiontool");
 let ww2Choise = {
     "init_win_webview2": {
         description: "init win_webview2",
@@ -16,6 +17,8 @@ let ww2Choise = {
     }
 };
 async function buildForServer() {
+    let version = await (0, versiontool_1.getWWvVersion)();
+    console.log("win_webview2 : " + version);
     let userChoise = await (0, userExec_1.readUserScripts)();
     if (userChoise != null) {
         ww2Choise = {

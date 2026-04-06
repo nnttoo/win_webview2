@@ -2,34 +2,9 @@ import { fileURLToPath } from 'node:url';
 import path, { dirname } from 'node:path';
 import { existsSync } from 'node:fs';
 
+ 
 
-/**
- * 
- * Penting!! jangan pindah file ini ketempat lain,
- * Sesuaikan ulang jika file ini dipindah karena ini menggunakan __dirname
- * dan juga file ini akan ditranspile ke js ke folder Dist, posisi file ini terhadap root antara file ts dan
- * file js harus sama,
- * 
- */
-export function getWw2Dirname() {
-    // Trik deteksi lingkungan
-    const _filename = typeof __filename !== 'undefined'
-        ? __filename
-         // @ts-ignore:
-        : fileURLToPath(eval('import.meta.url'));
-
-    const _dirname = typeof __dirname !== 'undefined'
-        ? __dirname
-        : dirname(_filename);
-
-
-
-    let ww2ModulePath = path.join(_dirname,"../../../")
-
-    return { _dirname, _filename , ww2ModulePath};
-}
-
-export function findUserProjectRoot(currentDir : string = process.cwd()) { 
+function findUserProjectRootRecrusive(currentDir : string = process.cwd()) { 
 
     const packagePath = path.join(currentDir, 'package.json'); 
     if (existsSync(packagePath)) {
@@ -39,6 +14,23 @@ export function findUserProjectRoot(currentDir : string = process.cwd()) {
     if (parentDir === currentDir) {
         return null;
     } 
-    return findUserProjectRoot(parentDir);
+    return findUserProjectRootRecrusive(parentDir);
 }
- 
+
+export function findUserProjectRoot() { 
+
+    // - Deployed Condition 
+    const packagePath = path.join(path.dirname(process.execPath), 'package.json'); 
+    if (existsSync(packagePath)) {
+        return path.dirname(packagePath);
+    }  
+    return findUserProjectRootRecrusive(process.cwd());
+}
+
+export function getWWVNodeModuleFolder(){
+    let userRootProject = findUserProjectRoot();
+    if(userRootProject == null) throw "root project user not found";
+
+    let nodeModuleFolder = path.join(userRootProject,"node_modules/win_webview2");
+    return nodeModuleFolder;
+}

@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { getWw2Dirname } from "./dirnameTool";
+import {   findUserProjectRoot, getWWVNodeModuleFolder } from "./dirnameTool";
 import { ConfigWW2, readConfig } from "./ww2_config";
 
 interface Ww2WebConfig {
@@ -44,20 +44,37 @@ interface Ww2Module {
 
 
 export async function getModule() {
-    let dirname = getWw2Dirname();
+    let addOnName = "ww2_addon.node";
 
-    let filepath = path.join(
-        dirname._dirname,
-        "./ww2_addon.node"
-    );
+    let filepath = (()=>{
 
-    if (!existsSync(filepath)) {
+        let userFolder = findUserProjectRoot();
+        if(userFolder == null) return null;
+        let r = path.join(
+            userFolder,
+            addOnName
+        );
 
+        if(!existsSync(r)) return null;
+
+        return r;
+
+    })();
+
+    filepath = await ( async ()=>{
+        if(filepath != null) return filepath;
+        let wwvModulePath = getWWVNodeModuleFolder();
         let config = await readConfig();
-        if(config == null) throw "user config null";
-        filepath = path.join(dirname._dirname, `../../../win_lib/${config.platform}/ww2_addon.node`);
+        if(config == null) return null;
 
-    }
+        let r =  path.join(wwvModulePath, `win_lib/${config.platform}/ww2_addon.node`);
+
+        return r;
+        
+
+    })(); 
+
+    if(filepath == null) throw "file not found";
 
     let myAddon = require(filepath) as Ww2Module;
     return myAddon;
@@ -72,7 +89,9 @@ export function closeSplash(){
     });
 }
 
+
+
 export * from "./ww2_server"
 export {findUserProjectRoot } from "./dirnameTool"
-export {readConfig} ;
-export {getWw2Dirname}
+export {readConfig} ; 
+export {getWWVNodeModuleFolder}

@@ -4,4 +4,4 @@ export type ConfigWW2 = {
     outdir: string;
     platform: 'Win32' | 'x64';
 };
-export declare function readConfig(): Promise<ConfigWW2 | null>;
+export declare function readConfig(): Promise<ConfigWW2>;
