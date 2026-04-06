@@ -38,6 +38,14 @@ exports.findUserProjectRoot = findUserProjectRoot;
 const node_url_1 = require("node:url");
 const node_path_1 = __importStar(require("node:path"));
 const node_fs_1 = require("node:fs");
+/**
+ *
+ * Penting!! jangan pindah file ini ketempat lain,
+ * Sesuaikan ulang jika file ini dipindah karena ini menggunakan __dirname
+ * dan juga file ini akan ditranspile ke js ke folder Dist, posisi file ini terhadap root antara file ts dan
+ * file js harus sama,
+ *
+ */
 function getWw2Dirname() {
     // Trik deteksi lingkungan
     const _filename = typeof __filename !== 'undefined'

@@ -29,9 +29,14 @@ function debugDir(dirPath: string) {
             console.log(error);
         }
     }
-    try{
+    
+    try{ 
+        await mkdir(path.join(ww2ModulePath, "win_lib"));
 
+    } catch{
 
+    }
+    try{ 
         await mkdir(path.join(ww2ModulePath, "win_lib/Win32"));
 
     } catch{

@@ -15,10 +15,12 @@ function debugDir(dirPath) {
 (async () => {
     let result = "\n";
     let dirname = (0, dirnameTool_1.getWw2Dirname)();
-    let rootPath = dirname.ww2ModulePath;
-    console.log(rootPath);
+    let ww2ModulePath = dirname.ww2ModulePath;
     let copyFromRoot = async (src, target) => {
         try {
+            let rootPath = node_path_1.default.join(ww2ModulePath, "../");
+            console.log("ModulePath : ", ww2ModulePath);
+            console.log("rootPath : ", rootPath);
             result += "\n" + target;
             await (0, promises_1.copyFile)(node_path_1.default.join(rootPath, src), node_path_1.default.join(rootPath, target));
         }
@@ -27,12 +29,17 @@ function debugDir(dirPath) {
         }
     };
     try {
-        await (0, promises_1.mkdir)(node_path_1.default.join(rootPath, "win_webview2/win_lib/Win32"));
+        await (0, promises_1.mkdir)(node_path_1.default.join(ww2ModulePath, "win_lib"));
     }
     catch {
     }
     try {
-        await (0, promises_1.mkdir)(node_path_1.default.join(rootPath, "win_webview2/win_lib/x64"));
+        await (0, promises_1.mkdir)(node_path_1.default.join(ww2ModulePath, "win_lib/Win32"));
+    }
+    catch {
+    }
+    try {
+        await (0, promises_1.mkdir)(node_path_1.default.join(ww2ModulePath, "win_lib/x64"));
     }
     catch (error) {
     }
