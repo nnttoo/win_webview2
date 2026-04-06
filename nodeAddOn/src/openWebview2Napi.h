@@ -4,6 +4,8 @@
 #include "openWebview2.h"
 #include "napitools.h"
 
+#include "openWebview2Check.h"
+
 namespace MyWebViewNapi
 {
     class WebViewWorker : public Napi::AsyncWorker
@@ -49,6 +51,11 @@ namespace MyWebViewNapi
         // 1. Ini jalan di thread luar (tidak boleh sentuh objek V8/Napi)
         void Execute() override
         {
+
+            if(!IsWebView2Installed()){
+                hasil = "Open UI failed";
+                return;
+            }
 
             MyWebView myweb;
             myweb.openWebview2(NULL, webconfig);

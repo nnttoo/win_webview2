@@ -78,6 +78,7 @@ target_link_libraries(${PROJECT_NAME}
     ${CMAKE_JS_LIB} 
     wil 
     "${WV2_LIB_PATH}"
+    shell32.lib
 )
 
 # 7. DEFINITIONS & POST-BUILD

@@ -4,7 +4,7 @@
     "module": "esnext",
     "declaration": true, 
     "rootDir": "./",
-    "outDir": "../dist/browser",
+    "outDir": "../../dist/browser",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true

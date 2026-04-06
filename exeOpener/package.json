@@ -10,5 +10,9 @@
     "clean": "rd /s /q build"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    
+    "win_webview2": "file:../win_webview2"
+  }
 }
