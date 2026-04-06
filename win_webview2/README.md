@@ -14,6 +14,7 @@ npm install win_webview2
 ``` 
 
 
+
 ## Interactive Project Management
 The win_webview2 CLI is designed to be your single point of control for the entire development lifecycle.
 ## 1. Scaffolding (First time)
@@ -23,6 +24,12 @@ To download the boilerplate and set up your project, simply run:
 npx win_webview2
 ```
 
+or   
+
+```sh
+npx wwv
+```
+
 ## 2. Develop, Watch, and Build
 After the initial setup, you don't need to remember complex commands. Just run the same command again:
 
@@ -30,6 +37,12 @@ After the initial setup, you don't need to remember complex commands. Just run t
 
 ```sh
 npx win_webview2
+```
+
+or   
+
+```sh
+npx wwv
 ```
 
 What it does:

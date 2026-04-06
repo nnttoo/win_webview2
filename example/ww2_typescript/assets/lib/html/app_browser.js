@@ -28,7 +28,7 @@
     });
   };
 
-  // ../node_modules/win_webview2/dist/browser/ww2_browser.js
+  // node_modules/win_webview2/dist/browser/ww2_browser.js
   function callWw2(arg) {
     return __async(this, null, function* () {
       let response = yield fetch("/ww2_post", {
@@ -43,7 +43,7 @@
     });
   }
   var init_ww2_browser = __esm({
-    "../node_modules/win_webview2/dist/browser/ww2_browser.js"() {
+    "node_modules/win_webview2/dist/browser/ww2_browser.js"() {
     }
   });
 

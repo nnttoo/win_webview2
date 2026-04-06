@@ -23,6 +23,12 @@ To download the boilerplate and set up your project, simply run:
 npx win_webview2
 ```
 
+or   
+
+```sh
+npx wwv
+```
+
 ## 2. Develop, Watch, and Build
 After the initial setup, you don't need to remember complex commands. Just run the same command again:
 
@@ -30,6 +36,12 @@ After the initial setup, you don't need to remember complex commands. Just run t
 
 ```sh
 npx win_webview2
+```
+
+or   
+
+```sh
+npx wwv
 ```
 
 What it does:
