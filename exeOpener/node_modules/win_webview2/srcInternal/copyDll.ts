@@ -34,7 +34,7 @@ function debugDir(dirPath: string) {
 
     }
     try{ 
-        await mkdir(path.join(ww2SourcePath, "win_lib/Win32"));
+        await mkdir(path.join(ww2SourcePath, "win_lib/x86"));
 
     } catch{
 
@@ -58,21 +58,21 @@ function debugDir(dirPath: string) {
 
     await copyFromRoot(
         "exeOpener/build/x86/exeOpenner.exe",
-        "win_webview2/win_lib/Win32/exeOpenner.exe"
+        "win_webview2/win_lib/x86/exeOpenner.exe"
     );
     await copyFromRoot(
         "exeOpener/build/x86/splash.png",
-        "win_webview2/win_lib/Win32/splash.png"
+        "win_webview2/win_lib/x86/splash.png"
     );
 
     console.log("copy webview2 32");
     await copyFromRoot(
         "nodeAddOn/build/ia32/Release/ww2_addon.node",
-        "win_webview2/win_lib/Win32/ww2_addon.node"
+        "win_webview2/win_lib/x86/ww2_addon.node"
     );
     await copyFromRoot(
         "nodeAddOn/build/ia32/Release/WebView2Loader.dll",
-        "win_webview2/win_lib/Win32/WebView2Loader.dll"
+        "win_webview2/win_lib/x86/WebView2Loader.dll"
     );
 
     console.log("copy webview2 64");

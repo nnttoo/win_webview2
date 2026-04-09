@@ -1,5 +1,4 @@
-import { fileURLToPath } from 'node:url';
-import path, { dirname } from 'node:path';
+import path from 'node:path';
 import { existsSync } from 'node:fs';
 
  
@@ -26,11 +25,21 @@ export function findUserProjectRoot() {
     }  
     return findUserProjectRootRecrusive(process.cwd());
 }
-
+ 
 export function getWWVNodeModuleFolder(){
-    let userRootProject = findUserProjectRoot();
+    let userRootProject = findUserProjectRoot(); 
     if(userRootProject == null) throw "root project user not found";
 
     let nodeModuleFolder = path.join(userRootProject,"node_modules/win_webview2");
+
+    if(!existsSync(nodeModuleFolder)){  
+        if(userRootProject.endsWith("win_webview2")){
+            console.log("on source win_webview2folder \n\n")
+
+            let npath = path.join(nodeModuleFolder,"../../");
+            nodeModuleFolder = npath; 
+        }
+
+    }  
     return nodeModuleFolder;
 }

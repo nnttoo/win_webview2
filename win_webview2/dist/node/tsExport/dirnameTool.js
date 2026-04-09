@@ -31,5 +31,12 @@ function getWWVNodeModuleFolder() {
     if (userRootProject == null)
         throw "root project user not found";
     let nodeModuleFolder = node_path_1.default.join(userRootProject, "node_modules/win_webview2");
+    if (!(0, node_fs_1.existsSync)(nodeModuleFolder)) {
+        if (userRootProject.endsWith("win_webview2")) {
+            console.log("on source win_webview2folder \n\n");
+            let npath = node_path_1.default.join(nodeModuleFolder, "../../");
+            nodeModuleFolder = npath;
+        }
+    }
     return nodeModuleFolder;
 }

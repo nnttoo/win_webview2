@@ -20,6 +20,7 @@ async function getWWvVersion() {
         result = jsonObj.version;
     }
     catch (error) {
+        console.log(error);
     }
     return result;
 }
