@@ -1,2 +1,3 @@
-./src/*
-./win_lib/*
+src/
+win_lib/
+srcInternal/
