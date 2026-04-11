@@ -7,7 +7,7 @@
     "run": "tsx ./srcNode/app.ts",
     "deploy": "npm run build_browser && npm run build_server &&  tsx ./srcBuilder/builder_deploy.ts",
     "clean_dist": "rimraf dist",
-    "win_webview2": "npx win_webview2",
+    "win_webview2": "npx wwv",
     "build_server": "tsx ./srcBuilder/build_server.ts",
     "build_server_watch": "npm run build_server -- --watch",
     "build_browser": "tsx ./srcBuilder/build_browser.ts",
@@ -20,7 +20,7 @@
     "esbuild": "^0.28.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
-    "win_webview2": "^1.1.16",
+    "win_webview2": "^1.1.18",
     "ws": "^8.20.0"
   },
   "devDependencies": {

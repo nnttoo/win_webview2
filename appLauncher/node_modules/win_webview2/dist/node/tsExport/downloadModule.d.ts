@@ -1,3 +1,4 @@
+import { WwvPlatFrom } from "./ww2_config";
 interface Ww2WebConfig {
     callback: (err: any, data: any) => void;
     wclassname: string;
@@ -28,5 +29,6 @@ interface Ww2Module {
     openFolderDialog: (arg: WW2FileDialogArg) => void;
     controlWindow: (arg: WW2ControlWindowsArg) => void;
 }
+export declare function downloadModuleAndExtract(platform: WwvPlatFrom): Promise<void>;
 export declare function getModule(): Promise<Ww2Module>;
 export {};

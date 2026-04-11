@@ -1,6 +1,7 @@
 import { exec } from "node:child_process";
 import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path"; 
+import { createZip } from "./createZip";
 
 function debugDir(dirPath: string) {
     exec("cd " + dirPath + "&& dir", (s, o) => {
@@ -28,7 +29,7 @@ function debugDir(dirPath: string) {
     }
     
     try{ 
-        await mkdir(path.join(ww2SourcePath, "win_lib"));
+        await mkdir(path.join(ww2SourcePath, "win_lib"),{recursive : true});
 
     } catch{
 
@@ -48,20 +49,20 @@ function debugDir(dirPath: string) {
     }
 
     await copyFromRoot(
-        "exeOpener/build/x64/exeOpenner.exe",
-        "win_webview2/win_lib/x64/exeOpenner.exe"
+        "appLauncher/build/x64/appLauncher.exe",
+        "win_webview2/win_lib/x64/appLauncher.exe"
     );
     await copyFromRoot(
-        "exeOpener/build/x64/splash.png",
+        "appLauncher/build/x64/splash.png",
         "win_webview2/win_lib/x64/splash.png"
     );
 
     await copyFromRoot(
-        "exeOpener/build/x86/exeOpenner.exe",
-        "win_webview2/win_lib/x86/exeOpenner.exe"
+        "appLauncher/build/x86/appLauncher.exe",
+        "win_webview2/win_lib/x86/appLauncher.exe"
     );
     await copyFromRoot(
-        "exeOpener/build/x86/splash.png",
+        "appLauncher/build/x86/splash.png",
         "win_webview2/win_lib/x86/splash.png"
     );
 
@@ -88,5 +89,8 @@ function debugDir(dirPath: string) {
 
 
     console.log("copy done :" + result);
+    console.log("create zip");
+    createZip();
+    console.log("create zip done");
 
 })();

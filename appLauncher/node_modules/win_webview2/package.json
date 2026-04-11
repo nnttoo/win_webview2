@@ -1,6 +1,6 @@
 {
   "name": "win_webview2",
-  "version": "1.1.16",
+  "version": "1.1.18",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnttoo/win_webview2"
@@ -28,12 +28,14 @@
     "build_node_watch": "npm run build_node -- --watch",
     "build_browser": "tsc -p ./src/srcBrowser/tsconfig.json",
     "build_browser_watch": "npm run build_browser -- --watch",
-    "build_all" : "npm run build_node && npm run build_browser",
-    "copy_dll": "tsx ./srcInternal/copyDll.ts"
+    "build_all": "npm run build_node && npm run build_browser",
+    "copy_dll": "tsx ./srcInternal/copyDll.ts",
+    "Clean_WinLib": "rm -rf ./win_lib"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.5.17",
     "comment-json": "^4.6.2",
     "degit": "^2.8.4",
     "express": "^5.2.1",
@@ -41,6 +43,7 @@
     "tsx": "^4.21.0"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.2",
     "@types/prompts": "^2.4.9",

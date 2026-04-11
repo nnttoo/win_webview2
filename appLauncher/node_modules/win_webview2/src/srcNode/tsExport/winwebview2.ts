@@ -1,8 +1,7 @@
 import {   getWWVNodeModuleFolder } from "./dirnameTool";
 import { readConfig } from "./ww2_config";
-import { getModule } from "./downloadModule";
-
-
+import { downloadModuleAndExtract, getModule } from "./downloadModule";
+ 
 
 export function closeSplash(){
     return getModule().then((module)=>{
@@ -19,4 +18,5 @@ export * from "./downloadModule"
 export * from "./ww2_server"
 export {findUserProjectRoot } from "./dirnameTool"
 export {readConfig} ; 
-export {getWWVNodeModuleFolder}
+export {getWWVNodeModuleFolder, downloadModuleAndExtract}
+

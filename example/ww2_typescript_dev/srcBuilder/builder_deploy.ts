@@ -94,7 +94,7 @@ async function deploy() {
             wwvNodeModulePath,
             "win_lib",
             ww2ConfigObj.platform,
-            "exeOpenner.exe"
+            "appLauncher.exe"
         );
 
 

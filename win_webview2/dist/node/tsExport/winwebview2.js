@@ -14,13 +14,14 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWWVNodeModuleFolder = exports.readConfig = exports.findUserProjectRoot = void 0;
+exports.downloadModuleAndExtract = exports.getWWVNodeModuleFolder = exports.readConfig = exports.findUserProjectRoot = void 0;
 exports.closeSplash = closeSplash;
 const dirnameTool_1 = require("./dirnameTool");
 Object.defineProperty(exports, "getWWVNodeModuleFolder", { enumerable: true, get: function () { return dirnameTool_1.getWWVNodeModuleFolder; } });
 const ww2_config_1 = require("./ww2_config");
 Object.defineProperty(exports, "readConfig", { enumerable: true, get: function () { return ww2_config_1.readConfig; } });
 const downloadModule_1 = require("./downloadModule");
+Object.defineProperty(exports, "downloadModuleAndExtract", { enumerable: true, get: function () { return downloadModule_1.downloadModuleAndExtract; } });
 function closeSplash() {
     return (0, downloadModule_1.getModule)().then((module) => {
         module.controlWindow({
