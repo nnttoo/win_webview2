@@ -118,7 +118,7 @@ export async function ww2_CreateServer(arg: {
 
     let ww2Module = await getModule();
 
-    let server = app.listen(port, async (err) => {
+    let server = app.listen(port,'127.0.0.1', async (err) => {
         let add = server.address();
         if (add == null) {
             console.log("build server failed : " + err);
@@ -128,7 +128,7 @@ export async function ww2_CreateServer(arg: {
         let addr = add as AddressInfo;
 
         let resultPort = addr.port;
-        let url = `http://localhost:${resultPort}`;
+        let url = `http://127.0.0.1:${resultPort}`;
 
         console.log(url);
 
