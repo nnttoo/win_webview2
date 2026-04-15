@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "tsx ./srcNode/app.ts",
+    "run": "npm run build_browser && tsx ./srcNode/app.ts",
     "deploy": "npm run build_browser && npm run build_server &&  tsx ./srcBuilder/builder_deploy.ts",
     "clean_dist": "rimraf dist",
     "win_webview2": "npx win_webview2",

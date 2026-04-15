@@ -11,7 +11,8 @@ interface Ww2WebConfig {
     isKiosk: boolean;
     isMaximize: boolean;
     isDebug: boolean;
-
+    virtualHostNameToFolderMapping? : string,
+    onPostMessage : (msg : string, reply : (msg : string)=>void)=>void
 }
 
 interface WW2FileDialogArg {
@@ -55,11 +56,16 @@ let testWebView = () => {
             },
             width: 700,
             height: 500,
-            isDebug: false,
+            isDebug: true,
             isKiosk: false,
             isMaximize: false,
             title: "Test Title",
-            url: "https://harycodeworks.com"
+            url : "https://google.com",
+            virtualHostNameToFolderMapping: "D:/MyFolder/NodejsModule/Webview2Nodejs/win_webview2/nodeAddOnTest/tsSrc/",
+            onPostMessage : (msg, reply )=>{
+                console.log("halo ini dari node", msg);
+                reply("haloi ini sudah diterima");
+            }   
         }
     );
     console.log("tst ini kebuka");

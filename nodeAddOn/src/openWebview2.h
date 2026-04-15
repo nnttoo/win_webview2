@@ -18,6 +18,8 @@
 #include <iostream>
 #include <wrl.h>
 
+#define WM_SEND_WEB_MESSAGE (WM_USER + 1)
+
 class MyWebView
 {
 
@@ -32,9 +34,12 @@ public:
 		std::wstring title;
 		bool isDebugMode = false;
 		std::wstring wclassname;
+		std::function<void(std::wstring)> onPostMessage;
+		std::wstring virtualHostNameToFolderMapping;
 	};
 	Microsoft::WRL::ComPtr<ICoreWebView2Controller> webviewController;
 	Microsoft::WRL::ComPtr<ICoreWebView2> webview;
+	HWND hWnd;
 
 	void realOpenWebview2(
 		HWND hWnd,
@@ -70,6 +75,9 @@ public:
 									this->webviewController->get_CoreWebView2(this->webview.ReleaseAndGetAddressOf());
 								}
 
+								this->registerPostMessage(config);
+								this->allowAllPermission();
+
 								// Add a few settings for the webview
 								// The demo step is redundant since the values are the default settings
 								Microsoft::WRL::ComPtr<ICoreWebView2Settings> settings;
@@ -89,7 +97,7 @@ public:
 								this->webviewController->put_Bounds(bounds);
 
 								// Schedule an async task to navigate to Bing
-								this->webview->Navigate(config.url.c_str());
+								this->webview->Navigate(this->NavigateOrsetVirtualHost(config).c_str());
 
 								// <NavigationEvents>
 								// Step 4 - Navigation events
@@ -132,7 +140,6 @@ public:
 	{
 		return (HICON)LoadImageW(NULL, filePath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
 	}
-
 	void openWebview2(
 
 		HINSTANCE hInstance,
@@ -168,10 +175,11 @@ public:
 
 			return;
 		}
- 
+
 		std::wcout << config.title << std::endl;
 		std::wstring r;
 
+		config.onPostMessage(L"test dulyu ");
 		// config.wclassname = wndClassnme;
 		// config.width = 800;
 		// config.height = 600;
@@ -184,7 +192,7 @@ public:
 		HINSTANCE hInst;
 		// Store instance handle in our global variable
 		hInst = hInstance;
-		HWND hWnd = CreateWindowW(
+		hWnd = CreateWindowW(
 			config.wclassname.c_str(),
 			config.title.c_str(),
 			config.modewindow,
@@ -227,7 +235,6 @@ public:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		MyWebView *self = (MyWebView *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
-		;
 
 		switch (message)
 		{
@@ -242,6 +249,16 @@ public:
 				return FALSE;
 			}
 			return TRUE;
+		}
+		case WM_SEND_WEB_MESSAGE:
+		{
+			// SEKARANG KITA DI UI THREAD (Thread yang benar)
+			std::wstring *pMsg = (std::wstring *)wParam;
+
+			self->webview->PostWebMessageAsString(pMsg->c_str());
+
+			delete pMsg; // Hapus memori yang dialokasikan di heap tadi
+			return 0;
 		}
 		case WM_SIZE:
 			if (self->webviewController != nullptr)
@@ -260,5 +277,80 @@ public:
 		}
 
 		return 0;
+	}
+
+private:
+	void registerPostMessage(WebViewConfig config)
+	{
+		EventRegistrationToken tokenOnMessasge;
+		this->webview->add_WebMessageReceived(
+			Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+				[this, config](ICoreWebView2 *sender, ICoreWebView2WebMessageReceivedEventArgs *args) -> HRESULT
+				{
+					LPWSTR message;
+					// Mengambil pesan string dari JavaScript
+					args->TryGetWebMessageAsString(&message);
+
+					if (message != nullptr)
+					{
+						std::wstring msgStr(message);
+						CoTaskMemFree(message); // Bersihkan memori Windows
+
+						// Panggil lambda onPostMessage yang ada di struct config
+						// yang mana di dalamnya kita sudah pasang ThreadSafeFunction
+						if (config.onPostMessage)
+						{
+							config.onPostMessage(msgStr);
+						}
+					}
+					return S_OK;
+				})
+				.Get(),
+			&tokenOnMessasge);
+	}
+
+	void allowAllPermission()
+	{
+		EventRegistrationToken permissionToken;
+		this->webview->add_PermissionRequested(
+			Microsoft::WRL::Callback<ICoreWebView2PermissionRequestedEventHandler>(
+				[this](ICoreWebView2 *sender, ICoreWebView2PermissionRequestedEventArgs *args) -> HRESULT
+				{
+					COREWEBVIEW2_PERMISSION_KIND kind;
+					args->get_PermissionKind(&kind);
+
+					// Kamu bisa log fitur apa yang sedang meminta izin
+					// L"Camera", L"Microphone", L"Location", dll.
+
+					// Set semua permintaan menjadi ALLOW
+					args->put_State(COREWEBVIEW2_PERMISSION_STATE_ALLOW);
+
+					return S_OK;
+				})
+				.Get(),
+			&permissionToken);
+	}
+
+	std::wstring NavigateOrsetVirtualHost(WebViewConfig config)
+	{
+		if (config.virtualHostNameToFolderMapping == L""){
+			std::wcout << L"virtualHostNameToFolderMapping is NULL" << std::endl;
+			return config.url;
+		}
+			
+		Microsoft::WRL::ComPtr<ICoreWebView2_3> webView3;
+		if (SUCCEEDED(this->webview.As(&webView3)))
+		{
+			webView3->SetVirtualHostNameToFolderMapping(
+				L"app.local",
+				config.virtualHostNameToFolderMapping.c_str(),
+				COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+
+				return L"https://app.local/index.html";
+		} else {
+			
+			std::wcout << L"virtualHostNameToFolderMapping is Faild Cast" << std::endl;
+			return config.url;
+		}
 	}
 };

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+
+    <script>
+        // Fungsi untuk kirim pesan
+        function kirimPesanOtomatis() {
+            const pesan = "Ping dari WebView: " + new Date().toLocaleTimeString();
+
+            window.chrome.webview.postMessage(pesan); 
+            setTimeout(kirimPesanOtomatis, 5000);
+        }
+
+        // Jalankan pertama kali saat halaman siap
+        window.onload = kirimPesanOtomatis;
+
+        window.chrome.webview.addEventListener('message', function (event) {
+            // event.data berisi string dari PostWebMessageAsString di C++
+            const balasan = event.data;
+            console.log("horeeee", balasan);
+        });
+    </script>
+</body>
+
+</html>

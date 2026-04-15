@@ -1,3 +1,4 @@
+import { callVirtualDirFunction } from "./runVirtualDirBrowser";
 export async function callWw2(arg) {
     let response = await fetch("/ww2_post", {
         method: "POST",
@@ -9,3 +10,4 @@ export async function callWw2(arg) {
     let result = await response.json();
     return result;
 }
+export { callVirtualDirFunction };

@@ -1,5 +1,5 @@
 import { WwvPlatFrom } from "./ww2_config";
-interface Ww2WebConfig {
+export interface Ww2WebConfig {
     callback: (err: any, data: any) => void;
     wclassname: string;
     url: string;
@@ -9,6 +9,8 @@ interface Ww2WebConfig {
     isKiosk: boolean;
     isMaximize: boolean;
     isDebug: boolean;
+    virtualHostNameToFolderMapping?: string;
+    onPostMessage: (msg: string, reply: (msg: string) => void) => void;
 }
 interface WW2FileDialogArg {
     callback: (err: any, data: any) => void;

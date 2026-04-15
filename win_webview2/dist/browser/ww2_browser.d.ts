@@ -1,3 +1,4 @@
+import { callVirtualDirFunction } from "./runVirtualDirBrowser";
 interface WW2FileDialogArg {
     filter: string;
     ownerClassName: string;
@@ -29,4 +30,4 @@ export declare function callWw2(arg: PostData): Promise<{
     err: string;
     result: string;
 }>;
-export {};
+export { callVirtualDirFunction };

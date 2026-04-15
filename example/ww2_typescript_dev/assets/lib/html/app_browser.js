@@ -28,6 +28,46 @@
     });
   };
 
+  // ../../win_webview2/dist/browser/runVirtualDirBrowser.js
+  function registerListener() {
+    if (registerListenerReady)
+      return;
+    window.chrome.webview.addEventListener("message", function(event) {
+      let data = event.data;
+      try {
+        let jobj = JSON.parse(data);
+        funRegistred[jobj.replyFun](jobj.data);
+      } catch (error) {
+        console.log("messageError ", error);
+      }
+    });
+    registerListenerReady = true;
+  }
+  function callVirtualDirFunction(funName, param) {
+    let ranNumber = Date.now();
+    let replyFun = funName + ranNumber;
+    registerListener();
+    let jsonPost = {
+      funName,
+      data: param,
+      replyFun
+    };
+    window.chrome.webview.postMessage(JSON.stringify(jsonPost));
+    return new Promise((r, x) => {
+      funRegistred[replyFun] = (msg) => {
+        delete funRegistred[replyFun];
+        r(msg);
+      };
+    });
+  }
+  var registerListenerReady, funRegistred;
+  var init_runVirtualDirBrowser = __esm({
+    "../../win_webview2/dist/browser/runVirtualDirBrowser.js"() {
+      registerListenerReady = false;
+      funRegistred = {};
+    }
+  });
+
   // ../../win_webview2/dist/browser/ww2_browser.js
   function callWw2(arg) {
     return __async(this, null, function* () {
@@ -44,6 +84,7 @@
   }
   var init_ww2_browser = __esm({
     "../../win_webview2/dist/browser/ww2_browser.js"() {
+      init_runVirtualDirBrowser();
     }
   });
 
@@ -119,6 +160,34 @@
               wndClassName: "myuiclass"
             }
           });
+        });
+        btn("#testcamera").onclick = () => __async(null, null, function* () {
+          const video = document.querySelector("#videoElement");
+          let stream;
+          video.style.display = "block";
+          video.onclick = () => {
+            const tracks = stream.getTracks();
+            tracks.forEach((track) => {
+              track.stop();
+            });
+            video.srcObject = null;
+            video.style.display = "none";
+          };
+          if (navigator.mediaDevices.getUserMedia) {
+            try {
+              stream = yield navigator.mediaDevices.getUserMedia({ video: true });
+              video.srcObject = stream;
+            } catch (error) {
+              console.error("Gagal mengakses kamera: ", error);
+              alert("Kamera tidak diizinkan atau tidak ditemukan.");
+            }
+          } else {
+            alert("Browser kamu tidak mendukung akses kamera.");
+          }
+        });
+        btn("#testget").onclick = () => __async(null, null, function* () {
+          let result = yield callVirtualDirFunction("getTest", "ini darai bwoser");
+          console.log(result);
         });
       })();
     }

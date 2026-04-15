@@ -11,7 +11,7 @@ import AdmZip from "adm-zip";
 
 
 
-interface Ww2WebConfig {
+export interface Ww2WebConfig {
     callback: (err: any, data: any) => void;
     wclassname: string;
     url: string;
@@ -22,6 +22,8 @@ interface Ww2WebConfig {
     isKiosk: boolean;
     isMaximize: boolean;
     isDebug: boolean;
+    virtualHostNameToFolderMapping? : string,
+    onPostMessage : (msg : string, reply : (msg : string)=>void)=>void
 
 }
 
@@ -63,7 +65,7 @@ function extractZip(zipPath: string, targetDir: string): void {
   }
 };
 
-const binFileVersion = "1.1.16";
+const binFileVersion = "1.1.19";
 
 async function downloadModuleFile( platform: WwvPlatFrom) {
 

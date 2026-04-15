@@ -73,7 +73,8 @@ export async function ww2_CreateServer(arg: {
                     isMaximize: openWebArg.isMaximize,
                     title: openWebArg.title,
                     url: openWebArg.url,
-                    width: openWebArg.width
+                    width: openWebArg.width,
+                    onPostMessage : (m,r)=>{}
                 });
 
                 result = openWebArg.url;
@@ -148,6 +149,10 @@ export async function ww2_CreateServer(arg: {
             title: uiConfig.title,
             width: uiConfig.width,
             url: url,
+            onPostMessage : (msg,r)=>{
+
+            },
+            
 
         })
 

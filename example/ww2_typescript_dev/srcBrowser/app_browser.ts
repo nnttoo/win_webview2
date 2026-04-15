@@ -1,5 +1,5 @@
 //@ts-check
-import { callWw2 } from "win_webview2/browser"
+import { callVirtualDirFunction, callWw2 } from "win_webview2/browser"
 
 (() => {
 
@@ -7,7 +7,7 @@ import { callWw2 } from "win_webview2/browser"
         return document.querySelector(selector) as HTMLButtonElement;
     }
     function ipt(selector: string) {
-        return btn(selector) as any  as HTMLInputElement;
+        return btn(selector) as any as HTMLInputElement;
     }
 
     btn("#openfdialog").onclick = async () => {
@@ -67,7 +67,7 @@ import { callWw2 } from "win_webview2/browser"
         await callWw2({
             controlWindow: {
                 controlcmd: "maximize",
-                wndClassName: "myuiclass", 
+                wndClassName: "myuiclass",
             }
         })
     }
@@ -76,9 +76,43 @@ import { callWw2 } from "win_webview2/browser"
         await callWw2({
             controlWindow: {
                 controlcmd: "minimize",
-                wndClassName: "myuiclass", 
+                wndClassName: "myuiclass",
             }
         })
+    }
+
+    btn("#testcamera").onclick = async () => {
+        const video = document.querySelector("#videoElement") as HTMLVideoElement;
+        let stream: MediaStream;
+        video.style.display = "block";
+        video.onclick = () => {
+            const tracks = stream.getTracks();
+
+            tracks.forEach(track => {
+                track.stop(); // Ini yang benar-benar mematikan sensor hardware
+            });
+            video.srcObject = null;
+            video.style.display = "none";
+        }
+
+        // Cek apakah browser mendukung mediaDevices
+        if (navigator.mediaDevices.getUserMedia) {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (error) {
+                console.error("Gagal mengakses kamera: ", error);
+                alert("Kamera tidak diizinkan atau tidak ditemukan.");
+            }
+        } else {
+            alert("Browser kamu tidak mendukung akses kamera.");
+        }
+    }
+
+
+    btn("#testget").onclick = async () => {
+        let result = await callVirtualDirFunction("getTest", "ini darai bwoser");
+        console.log(result);
     }
 
 

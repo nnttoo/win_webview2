@@ -1,3 +1,5 @@
+import { callVirtualDirFunction } from "./runVirtualDirBrowser";
+
 interface WW2FileDialogArg {
     filter: string;
     ownerClassName: string;
@@ -45,3 +47,7 @@ export async function callWw2(arg : PostData){
     return result;
     
 }
+
+
+
+export {callVirtualDirFunction}
