@@ -15,7 +15,7 @@ let htmlFolder = (() => {
 })();
 
 runVirtualDir({
-    callback: (err, d) => {
+    onClose: (err, d) => {
 
     },
     height: 400,
@@ -27,11 +27,11 @@ runVirtualDir({
     width: 800,
     mapFunction : {
         getTest : async (msg)=>{
-
-            return "ini test dulu yaaaa : "  + msg;
+            console.log(msg);
+            return {data : "ini test dulu yaaaa : " };
         }
     },
-    virtualHostNameToFolderMapping : htmlFolder
+    htmlFolderPath : htmlFolder
 })
 
 // ww2_CreateServer({

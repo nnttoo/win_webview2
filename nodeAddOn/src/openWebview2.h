@@ -395,8 +395,8 @@ private:
 	void registerOnRequest()
 	{
 
-		if (config->virtualHostName == L"")
-			return;
+		if (config->virtualHostName == L"") return;
+		if(config->onVirtualHostRequested == nullptr) return;
 
 		EventRegistrationToken token;
 

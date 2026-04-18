@@ -22,7 +22,7 @@ const ww2_config_1 = require("./ww2_config");
 Object.defineProperty(exports, "readConfig", { enumerable: true, get: function () { return ww2_config_1.readConfig; } });
 const downloadModule_1 = require("./downloadModule");
 Object.defineProperty(exports, "downloadModuleAndExtract", { enumerable: true, get: function () { return downloadModule_1.downloadModuleAndExtract; } });
-const runVirtualDir_1 = require("./runVirtualDir");
+const runVirtualDir_1 = require("./runVirtualDir/runVirtualDir");
 Object.defineProperty(exports, "runVirtualDir", { enumerable: true, get: function () { return runVirtualDir_1.runVirtualDir; } });
 function closeSplash() {
     return (0, downloadModule_1.getModule)().then((module) => {

@@ -1,6 +1,16 @@
 import { WwvPlatFrom } from "./ww2_config";
+interface ResourceRequest {
+    uri: string;
+    method: string;
+    body: Uint8Array;
+}
+interface ResourceResponse {
+    status: number;
+    contentType: string;
+    body: Uint8Array;
+}
 export interface Ww2WebConfig {
-    callback: (err: any, data: any) => void;
+    onClose: (err: any, data: any) => void;
     wclassname: string;
     url: string;
     title: string;
@@ -9,8 +19,8 @@ export interface Ww2WebConfig {
     isKiosk: boolean;
     isMaximize: boolean;
     isDebug: boolean;
-    virtualHostNameToFolderMapping?: string;
-    onPostMessage: (msg: string, reply: (msg: string) => void) => void;
+    virtualHostName?: string;
+    onVirtualHostRequested?: (req: ResourceRequest, reply: (res: ResourceResponse) => void) => void;
 }
 interface WW2FileDialogArg {
     callback: (err: any, data: any) => void;
@@ -25,7 +35,7 @@ export interface WW2ControlWindowsArg {
     height?: number;
     width?: number;
 }
-interface Ww2Module {
+export interface Ww2Module {
     openWeb: (arg: Ww2WebConfig) => void;
     openFileDialog: (arg: WW2FileDialogArg) => void;
     openFolderDialog: (arg: WW2FileDialogArg) => void;

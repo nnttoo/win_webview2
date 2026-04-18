@@ -16,9 +16,9 @@ Napi::Value openWeb(const Napi::CallbackInfo &info)
     }
 
     Napi::Object paramsArg = info[0].As<Napi::Object>();
-    Napi::Function callback = paramsArg.Get("callback").As<Napi::Function>();
+    Napi::Function onClossed = paramsArg.Get("onClose").As<Napi::Function>();
 
-    MyWebViewNapi::WebViewWorker *worker = new MyWebViewNapi::WebViewWorker(callback);
+    MyWebViewNapi::WebViewWorker *worker = new MyWebViewNapi::WebViewWorker(onClossed);
 
     worker->parseConfig(paramsArg);
     worker->Queue();

@@ -1,7 +1,7 @@
 import { getWWVNodeModuleFolder } from "./dirnameTool";
 import { readConfig } from "./ww2_config";
 import { downloadModuleAndExtract } from "./downloadModule";
-import { runVirtualDir } from "./runVirtualDir";
+import { runVirtualDir } from "./runVirtualDir/runVirtualDir";
 export declare function closeSplash(): Promise<void>;
 export * from "./downloadModule";
 export * from "./ww2_server";

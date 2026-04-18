@@ -33,52 +33,55 @@ namespace MyWebViewNapi
                 );
             }
 
-            webconfig.onVirtualHostRequested = [this](MyWebView::ResourceRequest *request) -> MyWebView::ResourceResponse
+            if (!onVirtualHostRequested)
+                return;
+
+            webconfig.onVirtualHostRequested = [this](MyWebView::ResourceRequest *request)
             {
-                if (this->onVirtualHostRequested)
+                auto callback = [this, request](Napi::Env env, Napi::Function jsCallback)
                 {
-                    // PENTING: Bungkus ke shared_ptr agar objek request tidak mati
-                    // saat scope lambda ini selesai, karena JS akan memanggilnya nanti. 
+                    auto replyFnLambada = [this, request](const Napi::CallbackInfo &info)
+                    {
+                        std::wcout << L"callback Is called" << std::endl;
+                        auto *res = new MyWebView::ResourceResponse();
+                        if (info[0].IsObject())
+                        {
+                            Napi::Object obj = info[0].As<Napi::Object>();
 
-                    this->onVirtualHostRequested.NonBlockingCall([this, request](Napi::Env env, Napi::Function jsCallback)
-                                                                 {
-            
-            // Membuat fungsi reply untuk JS
-            Napi::Function replyFn = Napi::Function::New(env, [this, request](const Napi::CallbackInfo &info) {
-                std::wcout << L"ini dipanggil brooooo" << std::endl;
-                auto* res = new MyWebView::ResourceResponse();
-                if (info[0].IsObject()) {
-                    Napi::Object obj = info[0].As<Napi::Object>();
-                    
-                    res->status = obj.Has("status") ? obj.Get("status").As<Napi::Number>().Int32Value() : 200;
-                    res->contentType = obj.Has("contentType") ? MyNapiTools::NapiToWString(obj.Get("contentType")) : L"text/plain";
-                    
-                    if (obj.Has("body") && obj.Get("body").IsBuffer()) {
-                        Napi::Buffer<uint8_t> buf = obj.Get("body").As<Napi::Buffer<uint8_t>>();
-                        res->body.assign(buf.Data(), buf.Data() + buf.Length());
+                            res->status = obj.Has("status") ? obj.Get("status").As<Napi::Number>().Int32Value() : 200;
+                            res->contentType = obj.Has("contentType") ? MyNapiTools::NapiToWString(obj.Get("contentType")) : L"text/plain";
+
+                            if (obj.Has("body") && obj.Get("body").IsBuffer())
+                            {
+                                Napi::Buffer<uint8_t> buf = obj.Get("body").As<Napi::Buffer<uint8_t>>();
+                                res->body.assign(buf.Data(), buf.Data() + buf.Length());
+                            }
+                        }
+
+                        PostMessageW(this->myweb.hWnd, WM_SEND_WEB_MESSAGE, (WPARAM)request, (LPARAM)res);
+
+                        return info.Env().Undefined();
+                    };
+
+                    Napi::Function replyFn = Napi::Function::New(env, replyFnLambada);
+
+                    // Konversi Request ke JS Object
+                    Napi::Object jsReq = Napi::Object::New(env);
+                    jsReq.Set("uri", MyNapiTools::WStringToNapi(env, request->uri));
+                    jsReq.Set("method", MyNapiTools::WStringToNapi(env, request->method));
+
+                    // Berikan Body ke JS (sebagai Buffer)
+                    if (!request->body.empty())
+                    {
+                        jsReq.Set("body", Napi::Buffer<uint8_t>::Copy(env, request->body.data(), request->body.size()));
                     }
-                }
- 
 
-                PostMessageW(this->myweb.hWnd, WM_SEND_WEB_MESSAGE, (WPARAM)request, (LPARAM)res);
-                
-                return info.Env().Undefined();
-            });
+                    jsCallback.Call({jsReq, replyFn});
 
-            // Konversi Request ke JS Object
-            Napi::Object jsReq = Napi::Object::New(env);
-            jsReq.Set("uri", MyNapiTools::WStringToNapi(env, request->uri));
-            jsReq.Set("method", MyNapiTools::WStringToNapi(env, request->method));
-            
-            // Berikan Body ke JS (sebagai Buffer)
-            if (!request->body.empty()) {
-                jsReq.Set("body", Napi::Buffer<uint8_t>::Copy(env, request->body.data(), request->body.size()));
-            }
+                    return env.Undefined();
+                };
 
-            jsCallback.Call({ jsReq, replyFn }); });
-                }
-
-                return {};
+                this->onVirtualHostRequested.NonBlockingCall(callback);
             };
         }
 
@@ -137,7 +140,10 @@ namespace MyWebViewNapi
         void OnOK() override
         {
             Callback().Call({Env().Null(), Napi::String::New(Env(), hasil)});
-            onVirtualHostRequested.Release();
+            if (onVirtualHostRequested)
+            {
+                onVirtualHostRequested.Release();
+            }
         }
     };
 

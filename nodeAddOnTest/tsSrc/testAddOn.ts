@@ -13,7 +13,7 @@ interface ResourceResponse {
 }
 
 interface Ww2WebConfig {
-    callback: (err: any, data: any) => void;
+    onClose: (err: any, data: any) => void;
     wclassname: string;
     url: string;
     title: string;
@@ -24,7 +24,7 @@ interface Ww2WebConfig {
     isMaximize: boolean;
     isDebug: boolean;
     virtualHostName?: string,
-    onVirtualHostRequested: (req: ResourceRequest, reply: (res: ResourceResponse) => void) => void
+    onVirtualHostRequested?: (req: ResourceRequest, reply: (res: ResourceResponse) => void) => void
 }
 
 interface WW2FileDialogArg {
@@ -63,7 +63,7 @@ let testWebView = () => {
     myAddon.openWeb(
         {
             wclassname: "myClassName",
-            callback: (r: any, data: any) => {
+            onClose: (r: any, data: any) => {
 
                 console.log(data);
 
@@ -80,7 +80,7 @@ let testWebView = () => {
                 console.log(res.method);
                 console.log(res.uri);
 
-                const text = "Halo dari win_webview2!";
+                const text = "<b>Halo dari win_webview2!<b>";
                 const encoder = new TextEncoder();
                 const uint8Array = encoder.encode(text);
 

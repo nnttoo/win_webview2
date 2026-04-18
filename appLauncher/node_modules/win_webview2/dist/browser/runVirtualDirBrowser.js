@@ -1,36 +1,11 @@
-let registerListenerReady = false;
-let funRegistred = {};
-function registerListener() {
-    if (registerListenerReady)
-        return;
-    // @ts-ignore
-    window.chrome.webview.addEventListener('message', function (event) {
-        let data = event.data;
-        try {
-            let jobj = JSON.parse(data);
-            funRegistred[jobj.replyFun](jobj.data);
-        }
-        catch (error) {
-            console.log("messageError ", error);
-        }
+export async function callVirtualDirFunction(arg) {
+    let response = await fetch("/ww2_postmethod", {
+        method: "POST",
+        body: JSON.stringify(arg),
+        headers: {
+            "Content-Type": "application/json"
+        },
     });
-    registerListenerReady = true;
-}
-export function callVirtualDirFunction(funName, param) {
-    let ranNumber = Date.now();
-    let replyFun = funName + ranNumber;
-    registerListener();
-    let jsonPost = {
-        funName: funName,
-        data: param,
-        replyFun: replyFun
-    };
-    // @ts-ignore
-    window.chrome.webview.postMessage(JSON.stringify(jsonPost));
-    return new Promise((r, x) => {
-        funRegistred[replyFun] = (msg) => {
-            delete funRegistred[replyFun];
-            r(msg);
-        };
-    });
+    let result = await response.json();
+    return result;
 }

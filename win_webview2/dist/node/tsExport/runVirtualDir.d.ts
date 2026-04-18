@@ -4,9 +4,9 @@ export interface JsonMsg {
     data: string;
     replyFun: string;
 }
-export declare function runVirtualDir(config: Omit<Ww2WebConfig, "onPostMessage" | "url" | "virtualHostNameToFolderMapping"> & {
+export declare function runVirtualDir(config: Omit<Ww2WebConfig, "onVirtualHostRequested" | "url" | "virtualHostName"> & {
     mapFunction: {
         [key: string]: (msg: string) => Promise<string>;
     };
-    virtualHostNameToFolderMapping: string;
+    htmlFolderPath: string;
 }): void;

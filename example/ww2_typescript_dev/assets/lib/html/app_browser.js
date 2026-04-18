@@ -29,42 +29,21 @@
   };
 
   // ../../win_webview2/dist/browser/runVirtualDirBrowser.js
-  function registerListener() {
-    if (registerListenerReady)
-      return;
-    window.chrome.webview.addEventListener("message", function(event) {
-      let data = event.data;
-      try {
-        let jobj = JSON.parse(data);
-        funRegistred[jobj.replyFun](jobj.data);
-      } catch (error) {
-        console.log("messageError ", error);
-      }
-    });
-    registerListenerReady = true;
-  }
-  function callVirtualDirFunction(funName, param) {
-    let ranNumber = Date.now();
-    let replyFun = funName + ranNumber;
-    registerListener();
-    let jsonPost = {
-      funName,
-      data: param,
-      replyFun
-    };
-    window.chrome.webview.postMessage(JSON.stringify(jsonPost));
-    return new Promise((r, x) => {
-      funRegistred[replyFun] = (msg) => {
-        delete funRegistred[replyFun];
-        r(msg);
-      };
+  function callVirtualDirFunction(arg) {
+    return __async(this, null, function* () {
+      let response = yield fetch("/ww2_postmethod", {
+        method: "POST",
+        body: JSON.stringify(arg),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      let result = yield response.json();
+      return result;
     });
   }
-  var registerListenerReady, funRegistred;
   var init_runVirtualDirBrowser = __esm({
     "../../win_webview2/dist/browser/runVirtualDirBrowser.js"() {
-      registerListenerReady = false;
-      funRegistred = {};
     }
   });
 
@@ -186,7 +165,10 @@
           }
         });
         btn("#testget").onclick = () => __async(null, null, function* () {
-          let result = yield callVirtualDirFunction("getTest", "ini darai bwoser");
+          let result = yield callVirtualDirFunction({
+            funName: "getTest",
+            params: { data: "test aja" }
+          });
           console.log(result);
         });
       })();

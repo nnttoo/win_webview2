@@ -111,7 +111,10 @@ import { callVirtualDirFunction, callWw2 } from "win_webview2/browser"
 
 
     btn("#testget").onclick = async () => {
-        let result = await callVirtualDirFunction("getTest", "ini darai bwoser");
+        let result = await callVirtualDirFunction({
+            funName : "getTest",
+            params : {data : "test aja"}
+        });
         console.log(result);
     }
 

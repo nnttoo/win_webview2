@@ -21,7 +21,7 @@ async function ww2_CreateServer(arg) {
             if (body.openWeb) {
                 let openWebArg = body.openWeb;
                 ww2Module.openWeb({
-                    callback: () => {
+                    onClose: () => {
                     },
                     height: openWebArg.height,
                     wclassname: openWebArg.wclassname,
@@ -30,8 +30,7 @@ async function ww2_CreateServer(arg) {
                     isMaximize: openWebArg.isMaximize,
                     title: openWebArg.title,
                     url: openWebArg.url,
-                    width: openWebArg.width,
-                    onPostMessage: (m, r) => { }
+                    width: openWebArg.width
                 });
                 result = openWebArg.url;
             }
@@ -85,7 +84,7 @@ async function ww2_CreateServer(arg) {
         console.log("open UI");
         let uiConfig = arg.uiConfig;
         ww2Module.openWeb({
-            callback: (err, data) => {
+            onClose: (err, data) => {
                 process.exit();
             },
             wclassname: uiConfig.wclassname,
@@ -96,8 +95,6 @@ async function ww2_CreateServer(arg) {
             title: uiConfig.title,
             width: uiConfig.width,
             url: url,
-            onPostMessage: (msg, r) => {
-            },
         });
     });
 }
