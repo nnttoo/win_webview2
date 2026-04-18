@@ -2,6 +2,6 @@ export declare function callVirtualDirFunction(arg: {
     funName: string;
     params: object;
 }): Promise<{
-    err: string;
+    error: string;
     data: object;
 }>;

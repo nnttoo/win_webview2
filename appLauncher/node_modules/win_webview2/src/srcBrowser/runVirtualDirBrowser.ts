@@ -15,7 +15,7 @@ export async function callVirtualDirFunction(arg: {
     });
 
     let result = await response.json() as {
-        err: string,
+        error: string,
         data: object,
     }
 
