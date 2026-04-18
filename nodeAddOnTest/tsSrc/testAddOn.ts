@@ -44,6 +44,8 @@ let filepath = path.join(
 
 const myAddon = require(filepath) as Ww2Module;
 
+let oldReply : ((msg : string)=>void) | null = null;
+
 let testWebView = () => {
 
     myAddon.openWeb(
@@ -63,8 +65,13 @@ let testWebView = () => {
             url : "https://google.com",
             virtualHostNameToFolderMapping: "D:/MyFolder/NodejsModule/Webview2Nodejs/win_webview2/nodeAddOnTest/tsSrc/",
             onPostMessage : (msg, reply )=>{
+                if(oldReply == null){
+                    oldReply = reply;
+                    console.log("test");
+                }
+
                 console.log("halo ini dari node", msg);
-                reply("haloi ini sudah diterima");
+                oldReply("haloi ini OLLLLD sudah diterima");
             }   
         }
     );
