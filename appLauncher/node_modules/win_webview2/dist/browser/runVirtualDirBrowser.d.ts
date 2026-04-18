@@ -3,5 +3,5 @@ export declare function callVirtualDirFunction(arg: {
     params: object;
 }): Promise<{
     err: string;
-    result: object;
+    data: object;
 }>;
