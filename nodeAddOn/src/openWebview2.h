@@ -17,13 +17,63 @@
 #include <shlobj.h>
 #include <iostream>
 #include <wrl.h>
+#include <shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
 
-#define WM_SEND_WEB_MESSAGE (WM_USER + 1)
+#define WM_SEND_WEB_MESSAGE (WM_APP + 0x0001)
 
 class MyWebView
 {
 
 public:
+	struct ResourceResponse
+	{
+		std::vector<uint8_t> body;
+		std::wstring contentType;
+		int status = 200;
+	};
+	struct ResourceRequest
+	{
+		std::wstring uri;
+		std::wstring method;
+		std::vector<uint8_t> body; // Body hasil ekstraksi di C++
+		std::wstring contentType;
+		ICoreWebView2WebResourceRequestedEventArgs *args;
+		Microsoft::WRL::ComPtr<ICoreWebView2Deferral> deferral;
+
+		void sendResponse(ResourceResponse res, MyWebView *mywebview)
+		{
+
+			std::wcout << L"sendResponse dipanggil" << std::endl;
+			Microsoft::WRL::ComPtr<IStream> responseStream(SHCreateMemStream(res.body.data(), (UINT)res.body.size()));
+
+			// 3. Siapkan header (minimal Content-Type)
+			std::wstring headers = L"Content-Type: " + res.contentType;
+
+			// 4. Buat objek response resmi dari WebView2
+			Microsoft::WRL::ComPtr<ICoreWebView2WebResourceResponse> webviewResponse;
+			HRESULT hr = mywebview->m_environment->CreateWebResourceResponse(
+				responseStream.Get(),
+				res.status,
+				L"OK",
+				headers.c_str(),
+				&webviewResponse);
+
+			if (SUCCEEDED(hr))
+			{
+				args->put_Response(webviewResponse.Get());
+			}
+			if (FAILED(hr))
+			{
+				// Cetak kode error dalam hex (misal: 0x80070057 - E_INVALIDARG)
+				printf("Gagal CreateWebResourceResponse. HRESULT: 0x%08X\n", hr);
+			}
+
+			deferral->Complete();
+			delete this;
+		}
+	};
+
 	struct WebViewConfig
 	{
 		int width;
@@ -34,8 +84,8 @@ public:
 		std::wstring title;
 		bool isDebugMode = false;
 		std::wstring wclassname;
-		std::function<void(std::wstring)> onPostMessage;
-		std::wstring virtualHostNameToFolderMapping;
+		std::function<void(ResourceRequest *)> onVirtualHostRequested;
+		std::wstring virtualHostName;
 	};
 	Microsoft::WRL::ComPtr<ICoreWebView2Controller> webviewController;
 	Microsoft::WRL::ComPtr<ICoreWebView2> webview;
@@ -43,8 +93,7 @@ public:
 
 	void realOpenWebview2(
 		HWND hWnd,
-		HINSTANCE hInstance,
-		WebViewConfig config)
+		HINSTANCE hInstance)
 	{
 
 		PWSTR localAppData = nullptr;
@@ -52,7 +101,7 @@ public:
 
 		std::wstring userDataFolder =
 			std::wstring(localAppData) +
-			L"\\cmdWebView_" + config.wclassname + L".WebView2";
+			L"\\cmdWebView_" + this->config->wclassname + L".WebView2";
 
 		LogPrint(userDataFolder);
 
@@ -61,13 +110,14 @@ public:
 			userDataFolder.c_str(),
 			nullptr,
 			Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-				[this, hWnd, config](HRESULT result, ICoreWebView2Environment *env) -> HRESULT
+				[this, hWnd](HRESULT result, ICoreWebView2Environment *env) -> HRESULT
 				{
+					m_environment = env;
 					// Create a CoreWebView2Controller and get the associated CoreWebView2 whose parent is the main window hWnd
 					env->CreateCoreWebView2Controller(
 						hWnd,
 						Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-							[this, hWnd, config](HRESULT result, ICoreWebView2Controller *controller) -> HRESULT
+							[this, hWnd](HRESULT result, ICoreWebView2Controller *controller) -> HRESULT
 							{
 								if (controller != nullptr)
 								{
@@ -75,8 +125,8 @@ public:
 									this->webviewController->get_CoreWebView2(this->webview.ReleaseAndGetAddressOf());
 								}
 
-								this->registerPostMessage(config);
 								this->allowAllPermission();
+								this->registerOnRequest();
 
 								// Add a few settings for the webview
 								// The demo step is redundant since the values are the default settings
@@ -88,8 +138,8 @@ public:
 								settings->put_AreDefaultContextMenusEnabled(FALSE);
 								// Resize WebView to fit the bounds of the parent window
 
-								settings->put_AreDevToolsEnabled(config.isDebugMode);
-								settings->put_AreDefaultContextMenusEnabled(config.isDebugMode);
+								settings->put_AreDevToolsEnabled(config->isDebugMode);
+								settings->put_AreDefaultContextMenusEnabled(config->isDebugMode);
 
 								RECT bounds;
 								GetClientRect(hWnd, &bounds);
@@ -97,7 +147,7 @@ public:
 								this->webviewController->put_Bounds(bounds);
 
 								// Schedule an async task to navigate to Bing
-								this->webview->Navigate(this->NavigateOrsetVirtualHost(config).c_str());
+								this->webview->Navigate(config->url.c_str());
 
 								// <NavigationEvents>
 								// Step 4 - Navigation events
@@ -148,7 +198,7 @@ public:
 	)
 	{
 		WNDCLASSEXW wcex;
-
+		this->config = &config;
 		HICON hIcon = LoadIconFromFile(JoinToDllPath(L"icon.ico"));
 
 		wcex.cbSize = sizeof(WNDCLASSEXW);
@@ -179,7 +229,6 @@ public:
 		std::wcout << config.title << std::endl;
 		std::wstring r;
 
-		config.onPostMessage(L"test dulyu ");
 		// config.wclassname = wndClassnme;
 		// config.width = 800;
 		// config.height = 600;
@@ -218,8 +267,7 @@ public:
 
 		realOpenWebview2(
 			hWnd,
-			hInst,
-			config);
+			hInst);
 
 		// Main message loop:
 		MSG msg;
@@ -252,13 +300,17 @@ public:
 		}
 		case WM_SEND_WEB_MESSAGE:
 		{
-			// SEKARANG KITA DI UI THREAD (Thread yang benar)
-			std::wstring *pMsg = (std::wstring *)wParam;
+			// Ambil data dari parameter pesan
+			auto *req = reinterpret_cast<MyWebView::ResourceRequest *>(wParam);
+			auto *res = reinterpret_cast<MyWebView::ResourceResponse *>(lParam);
 
-			self->webview->PostWebMessageAsString(pMsg->c_str());
+			req->sendResponse(*res, self);
 
-			delete pMsg; // Hapus memori yang dialokasikan di heap tadi
-			return 0;
+			// Hapus objek response yang dibuat dengan 'new' di thread Node.js
+			// agar tidak memory leak
+			delete res;
+
+			break;
 		}
 		case WM_SIZE:
 			if (self->webviewController != nullptr)
@@ -280,39 +332,13 @@ public:
 	}
 
 private:
-	void registerPostMessage(WebViewConfig config)
-	{
-		EventRegistrationToken tokenOnMessasge;
-		this->webview->add_WebMessageReceived(
-			Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-				[this, config](ICoreWebView2 *sender, ICoreWebView2WebMessageReceivedEventArgs *args) -> HRESULT
-				{
-					LPWSTR message;
-					// Mengambil pesan string dari JavaScript
-					args->TryGetWebMessageAsString(&message);
-
-					if (message != nullptr)
-					{
-						std::wstring msgStr(message);
-						CoTaskMemFree(message); // Bersihkan memori Windows
-
-						// Panggil lambda onPostMessage yang ada di struct config
-						// yang mana di dalamnya kita sudah pasang ThreadSafeFunction
-						if (config.onPostMessage)
-						{
-							config.onPostMessage(msgStr);
-						}
-					}
-					return S_OK;
-				})
-				.Get(),
-			&tokenOnMessasge);
-	}
-
+	WebViewConfig *config;
+	Microsoft::WRL::ComPtr<ICoreWebView2Environment> m_environment;
 	void allowAllPermission()
 	{
+
 		EventRegistrationToken permissionToken;
-		this->webview->add_PermissionRequested(
+		webview->add_PermissionRequested(
 			Microsoft::WRL::Callback<ICoreWebView2PermissionRequestedEventHandler>(
 				[this](ICoreWebView2 *sender, ICoreWebView2PermissionRequestedEventArgs *args) -> HRESULT
 				{
@@ -331,26 +357,84 @@ private:
 			&permissionToken);
 	}
 
-	std::wstring NavigateOrsetVirtualHost(WebViewConfig config)
+	std::vector<uint8_t> ExtractBody(ICoreWebView2WebResourceRequest *webRequest)
 	{
-		if (config.virtualHostNameToFolderMapping == L""){
-			std::wcout << L"virtualHostNameToFolderMapping is NULL" << std::endl;
-			return config.url;
-		}
-			
-		Microsoft::WRL::ComPtr<ICoreWebView2_3> webView3;
-		if (SUCCEEDED(this->webview.As(&webView3)))
-		{
-			webView3->SetVirtualHostNameToFolderMapping(
-				L"app.local",
-				config.virtualHostNameToFolderMapping.c_str(),
-				COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+		Microsoft::WRL::ComPtr<IStream> contentStream;
+		webRequest->get_Content(&contentStream);
 
-				return L"https://app.local/index.html";
-		} else {
-			
-			std::wcout << L"virtualHostNameToFolderMapping is Faild Cast" << std::endl;
-			return config.url;
+		std::vector<uint8_t> buffer;
+		if (contentStream)
+		{
+			STATSTG stat;
+			if (SUCCEEDED(contentStream->Stat(&stat, STATFLAG_NONAME)))
+			{
+				buffer.resize(stat.cbSize.LowPart);
+				ULONG bytesRead;
+				contentStream->Read(buffer.data(), (ULONG)buffer.size(), &bytesRead);
+			}
 		}
+		return buffer;
+	}
+
+	std::wstring GetHeader(ICoreWebView2WebResourceRequest *webRequest, std::wstring name)
+	{
+		Microsoft::WRL::ComPtr<ICoreWebView2HttpRequestHeaders> headers;
+		webRequest->get_Headers(&headers);
+
+		LPWSTR value;
+		HRESULT hr = headers->GetHeader(name.c_str(), &value);
+
+		if (SUCCEEDED(hr) && value != nullptr)
+		{
+			std::wstring result(value);
+			CoTaskMemFree(value);
+			return result;
+		}
+		return L"";
+	}
+	void registerOnRequest()
+	{
+
+		if (config->virtualHostName == L"")
+			return;
+
+		EventRegistrationToken token;
+
+		std::wstring filter = config->virtualHostName + L"*";
+
+		webview->AddWebResourceRequestedFilter(
+			filter.c_str(),
+			COREWEBVIEW2_WEB_RESOURCE_CONTEXT_ALL);
+		this->webview->add_WebResourceRequested(
+			Microsoft::WRL::Callback<ICoreWebView2WebResourceRequestedEventHandler>(
+				[this](ICoreWebView2 *sender, ICoreWebView2WebResourceRequestedEventArgs *args)
+				{
+					// Buat objek request
+					ResourceRequest *req = new ResourceRequest();
+					req->args = args;
+
+					Microsoft::WRL::ComPtr<ICoreWebView2WebResourceRequest> webRequest;
+					args->get_Request(&webRequest);
+
+					LPWSTR uri, method;
+					webRequest->get_Uri(&uri);
+					webRequest->get_Method(&method);
+					req->uri = uri;
+					req->method = method;
+					CoTaskMemFree(uri);
+					CoTaskMemFree(method);
+					req->contentType = GetHeader(webRequest.Get(), L"Content-Type");
+					if (req->method == L"POST" || req->method == L"PUT")
+					{
+						req->body = ExtractBody(webRequest.Get());
+					}
+
+					args->GetDeferral(&req->deferral);
+					config->onVirtualHostRequested(req);
+
+					return S_OK;
+				})
+				.Get(),
+			&token);
 	}
 };

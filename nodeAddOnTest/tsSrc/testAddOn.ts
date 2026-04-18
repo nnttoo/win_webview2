@@ -1,5 +1,17 @@
 import path from "node:path";
 
+interface ResourceRequest {
+    uri: string,
+    method: string,
+    body: Uint8Array
+}
+
+interface ResourceResponse {
+    status: number,
+    contentType: string,
+    body: Uint8Array
+}
+
 interface Ww2WebConfig {
     callback: (err: any, data: any) => void;
     wclassname: string;
@@ -11,30 +23,30 @@ interface Ww2WebConfig {
     isKiosk: boolean;
     isMaximize: boolean;
     isDebug: boolean;
-    virtualHostNameToFolderMapping? : string,
-    onPostMessage : (msg : string, reply : (msg : string)=>void)=>void
+    virtualHostName?: string,
+    onVirtualHostRequested: (req: ResourceRequest, reply: (res: ResourceResponse) => void) => void
 }
 
 interface WW2FileDialogArg {
     callback: (err: any, data: any) => void;
-    filter :  string;
-    ownerClassName : string;
+    filter: string;
+    ownerClassName: string;
 }
 
-interface WW2ControlWindowsArg{
-    wndClassName : string;
-    controlcmd : "close" | "move" | "maximize" | "minimize" | "resize" | "check",
-    left? : number;
-    top? : number;
-    height? : number;
-    width? : number;
+interface WW2ControlWindowsArg {
+    wndClassName: string;
+    controlcmd: "close" | "move" | "maximize" | "minimize" | "resize" | "check",
+    left?: number;
+    top?: number;
+    height?: number;
+    width?: number;
 }
 
 interface Ww2Module {
     openWeb: (arg: Ww2WebConfig) => void;
     openFileDialog: (arg: WW2FileDialogArg) => void;
-    openFolderDialog :(arg: WW2FileDialogArg) => void;
-    controlWindow :(arg: WW2ControlWindowsArg) => void;
+    openFolderDialog: (arg: WW2FileDialogArg) => void;
+    controlWindow: (arg: WW2ControlWindowsArg) => void;
 }
 
 let filepath = path.join(
@@ -44,7 +56,7 @@ let filepath = path.join(
 
 const myAddon = require(filepath) as Ww2Module;
 
-let oldReply : ((msg : string)=>void) | null = null;
+let oldReply: ((msg: string) => void) | null = null;
 
 let testWebView = () => {
 
@@ -62,17 +74,22 @@ let testWebView = () => {
             isKiosk: false,
             isMaximize: false,
             title: "Test Title",
-            url : "https://google.com",
-            virtualHostNameToFolderMapping: "D:/MyFolder/NodejsModule/Webview2Nodejs/win_webview2/nodeAddOnTest/tsSrc/",
-            onPostMessage : (msg, reply )=>{
-                if(oldReply == null){
-                    oldReply = reply;
-                    console.log("test");
-                }
+            url: "https://myapp.local",
+            virtualHostName: "https://myapp.local",
+            onVirtualHostRequested: (res, rply) => {
+                console.log(res.method);
+                console.log(res.uri);
 
-                console.log("halo ini dari node", msg);
-                oldReply("haloi ini OLLLLD sudah diterima");
-            }   
+                const text = "Halo dari win_webview2!";
+                const encoder = new TextEncoder();
+                const uint8Array = encoder.encode(text);
+
+                rply({
+                    body : uint8Array,
+                    contentType : "text/plain",
+                    status : 200,
+                })
+            }
         }
     );
     console.log("tst ini kebuka");
@@ -80,40 +97,40 @@ let testWebView = () => {
 };
 let testFileDialog = () => {
 
-     myAddon.openFileDialog({
-        filter : ".png",
-        ownerClassName : "",
-        callback : (err,data)=>{
+    myAddon.openFileDialog({
+        filter: ".png",
+        ownerClassName: "",
+        callback: (err, data) => {
             console.log(data);
         }
-     }); 
+    });
 }
 
- function testFolderDialog(){
+function testFolderDialog() {
     return myAddon.openFolderDialog({
-        filter : "",
-        ownerClassName : "",
-        
-        callback : (err,data)=>{
+        filter: "",
+        ownerClassName: "",
+
+        callback: (err, data) => {
             console.log(data);
         }
     });
 
 }
 
-function controlWindow(){
+function controlWindow() {
     var r = myAddon.controlWindow({
-        wndClassName : "myClassName",
-        controlcmd : "minimize"
+        wndClassName: "myClassName",
+        controlcmd: "minimize"
     });
 
     console.log(r);
 }
 
-function sleep(n : number){
-    return new Promise((r,x)=>{
+function sleep(n: number) {
+    return new Promise((r, x) => {
         setTimeout(() => {
-            r(null);  
+            r(null);
         }, n);
     })
 }
