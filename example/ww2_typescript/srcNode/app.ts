@@ -1,4 +1,3 @@
-
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { closeSplash, getModule, ww2_CreateServer } from "win_webview2/node"
