@@ -16,10 +16,10 @@ if(POLICY CMP0135)
 endif()
 
 # 2. DECLARE DEPENDENCIES (WIL & WEBVIEW2)
-FetchContent_Declare(
-  wil
-  URL https://www.nuget.org/api/v2/package/Microsoft.Windows.ImplementationLibrary/1.0.260126.7
-)
+# FetchContent_Declare(
+#   wil
+#   URL https://www.nuget.org/api/v2/package/Microsoft.Windows.ImplementationLibrary/1.0.260126.7
+# )
 
 FetchContent_Declare(
   webview2
@@ -27,14 +27,14 @@ FetchContent_Declare(
 )
 
 # Ambil datanya dulu
-FetchContent_MakeAvailable(wil webview2)
+FetchContent_MakeAvailable(webview2)
 
 # 3. SETUP WIL (Interface Header-only)
 # Sekarang wil_SOURCE_DIR sudah tersedia
-if(NOT TARGET wil)
-    add_library(wil INTERFACE)
-    target_include_directories(wil INTERFACE "${wil_SOURCE_DIR}/include")
-endif()
+# if(NOT TARGET wil)
+#     add_library(wil INTERFACE)
+#     target_include_directories(wil INTERFACE "${wil_SOURCE_DIR}/include")
+# endif()
 
 # 4. PREPARE PATHS (NODE-API & WEBVIEW2)
 execute_process(
@@ -75,8 +75,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # wil di sini akan memberikan path include otomatis karena sudah jadi INTERFACE
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
-    ${CMAKE_JS_LIB} 
-    wil 
+    ${CMAKE_JS_LIB}  
     "${WV2_LIB_PATH}"
     shell32.lib
 )

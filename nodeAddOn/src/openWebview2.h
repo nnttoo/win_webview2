@@ -5,8 +5,7 @@
 #include <string>
 #include <tchar.h>
 #define WIL_SUPPRESS_EXCEPTIONS
-#include <wrl.h>
-#include <wil/com.h>
+#include <wrl.h> 
 #include <sstream>
 // <IncludeHeader>
 // include WebView2 header
