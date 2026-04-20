@@ -42,8 +42,7 @@ public:
 
 		void sendResponse(ResourceResponse res, MyWebView *mywebview)
 		{
-
-			std::wcout << L"sendResponse dipanggil" << std::endl;
+ 
 			Microsoft::WRL::ComPtr<IStream> responseStream(SHCreateMemStream(res.body.data(), (UINT)res.body.size()));
 
 			// 3. Siapkan header (minimal Content-Type)
