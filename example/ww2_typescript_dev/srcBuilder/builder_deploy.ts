@@ -4,7 +4,8 @@ import path from "node:path";
 import sharp from "sharp"
 import ico from "sharp-ico"
 import rcedit from "rcedit";
-import { builderApi, findUserProjectRoot,  getWWVNodeModuleFolder, readConfig } from "win_webview2/node";
+import {   findUserProjectRoot,  getWWVNodeModuleFolder, readConfig } from "win_webview2/node";
+import { createLauncher } from "win_webview2/builder"
 import { copyDir } from "./build_copyDir"; 
 
 import pkgJson from "../package.json"
@@ -50,7 +51,7 @@ async function deploy() {
 
     })();
 
-    await builderApi.createLauncher({
+    await createLauncher({
         iconPath : path.join(userRootProject,"./assets/icon.png"),
         splashPath : path.join(userRootProject,"./assets/splash.png"),
         outPath : path.join(folderDist, ww2ConfigObj.appname + ".exe"),

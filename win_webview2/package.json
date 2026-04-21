@@ -1,6 +1,6 @@
 {
   "name": "win_webview2",
-  "version": "1.1.24",
+  "version": "1.1.25",
   "repository": {
     "type": "git",
     "url": "https://github.com/nnttoo/win_webview2"
@@ -16,6 +16,10 @@
     "./node": {
       "types": "./dist/node/tsExport/winwebview2.dt.ts",
       "default": "./dist/node/tsExport/winwebview2.js"
+    },
+    "./builder": {
+      "types": "./dist/node/builderApi/builderApi.d.ts",
+      "default": "./dist/node/builderApi/builderApi.js"
     }
   },
   "bin": {
