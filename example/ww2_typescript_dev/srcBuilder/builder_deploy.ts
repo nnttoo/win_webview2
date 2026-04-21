@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { copyFile, mkdir, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp"
 import ico from "sharp-ico"
@@ -50,28 +50,21 @@ async function deploy() {
 
     })();
 
+    await builderApi.createLauncher({
+        iconPath : path.join(userRootProject,"./assets/icon.png"),
+        splashPath : path.join(userRootProject,"./assets/splash.png"),
+        outPath : path.join(folderDist, ww2ConfigObj.appname + ".exe"),
+        platform : ww2ConfigObj.platform,
+        script  : ` .\\\\lib\\\\node.exe ./lib/${ww2ConfigObj.entry_point}`
+    });
+ 
 
-    await (async () => {
+    await copyFile(
+        path.join(folderDist,"icon.ico"),
+        path.join(folderDist,"lib","icon.ico")
+    );
 
-        console.log("make icon");
-        let iconPath = path.join(userRootProject, "./assets/icon.png");
-        if (!existsSync(iconPath)) {
-            console.log("icon not found");
-            return;
-        }
-
-        let outputIcon = path.join(ww2ConfigObj.outdir, "/lib/icon.ico");
-
-        const sizes = [16, 32, 48, 256]; // Ukuran standar untuk rcedit
-        const images = await Promise.all(sizes.map(size =>
-            sharp(iconPath)
-                .resize(size, size)
-                .toFormat('png')
-        ));
-
-
-        await ico.sharpsToIco(images, outputIcon);
-    })();
+    await rm(path.join(folderDist,"icon.ico"));
 
     await (async () => {
         console.log("copy node exe");
@@ -81,28 +74,7 @@ async function deploy() {
         await copyFile(inputNodeExe, outNodeExe);
 
 
-    })();
-
-    let runnerOutPath = path.join(
-        folderDist,
-        ww2ConfigObj.appname + ".exe"
-    )
-
-    await (async () => {
-        console.log("copy runner exe"); 
-        let runnerPath = path.join(
-            wwvNodeModulePath,
-            "win_lib",
-            ww2ConfigObj.platform,
-            "appLauncher.exe"
-        );
-
-
-
-
-        await copyFile(runnerPath, runnerOutPath);
-    })();
-
+    })(); 
     
 
     await (async () => {
@@ -118,20 +90,7 @@ async function deploy() {
 
         await copyDir(from, to);
 
-    })();
-
-    await (async () => {
-        console.log("create bat file");
-
-        let batfilePath = path.join(folderDist, "index.bat");
-
-        let bathCtn = `
-        .\\\\lib\\\\node.exe ./lib/${ww2ConfigObj.entry_point}
-        `
-
-        await writeFile(batfilePath, bathCtn);
-
-    })();
+    })(); 
 
 
     await (async () => {
@@ -171,21 +130,7 @@ async function deploy() {
 
 
 
-    })();
-
-    await (async () => {
-        console.log("edit icon");
-        let iconPath = path.join(
-            folderDist,
-            "lib",
-            "icon.ico"
-        );
-        iconPath = path.resolve(iconPath);
-
-        await rcedit(runnerOutPath, {
-            icon: iconPath,
-        });
-    })();
+    })(); 
 
     await (async ()=>{
         console.log("create package json"); 
@@ -198,17 +143,4 @@ async function deploy() {
 
 } 
 
-
-async function createLauncer(){
-    
-    let ww2ConfigObj = await readConfig();
-    builderApi.createLauncher({
-        iconPath : path.join(__dirname,"../assets/icon.png"),
-        splashPath : path.join(__dirname,"../assets/splash.png"),
-        outPath : path.join(__dirname, "../dist/" + ww2ConfigObj.appname + ".exe"),
-        platform : ww2ConfigObj.platform,
-        script  : ""
-    });
-}
-
-createLauncer();
+deploy();

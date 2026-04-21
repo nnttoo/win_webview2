@@ -22,7 +22,7 @@ function extractZip(zipPath, targetDir) {
     }
 }
 ;
-const binFileVersion = "1.1.21";
+const binFileVersion = "1.1.24";
 async function downloadModuleFile(platform) {
     let modulePath = (0, dirnameTool_1.getWWVNodeModuleFolder)();
     let winlibPath = node_path_1.default.join(modulePath, "win_lib");

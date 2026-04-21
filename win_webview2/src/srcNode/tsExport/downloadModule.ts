@@ -77,7 +77,7 @@ function extractZip(zipPath: string, targetDir: string): void {
   }
 };
 
-const binFileVersion = "1.1.21";
+const binFileVersion = "1.1.24";
 
 async function downloadModuleFile( platform: WwvPlatFrom) {
 
