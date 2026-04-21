@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(appLauncher)
 if(MINGW)
     # Static linking agar tidak butuh libgcc_s_dw2-1.dll dan libstdc++-6.dll
-    add_link_options(-static -static-libgcc -static-libstdc++)
+    add_link_options(-static -static-libgcc -static-libstdc++ -s)
 endif()
 set(CMAKE_CXX_STANDARD 17)
 

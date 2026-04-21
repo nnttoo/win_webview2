@@ -2,7 +2,8 @@ import {   getWWVNodeModuleFolder } from "./dirnameTool";
 import { readConfig } from "./ww2_config";
 import { downloadModuleAndExtract, getModule } from "./downloadModule";
 import { runVirtualDir } from "./runVirtualDir/runVirtualDir";
- 
+import * as builderApi from "../builderApi/builderApi"
+
 
 export function closeSplash(){
     return getModule().then((module)=>{
@@ -22,3 +23,4 @@ export {readConfig} ;
 export {getWWVNodeModuleFolder, downloadModuleAndExtract, runVirtualDir}
 
 
+export {builderApi}

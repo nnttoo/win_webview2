@@ -27,7 +27,7 @@ bool FileExists(const std::wstring& filePath)
     return file.good();
 }
 
-int runBatFile() {
+bool runBatFile() {
 
 
     std::cout << "jalani file" << std::endl; 
@@ -40,7 +40,7 @@ int runBatFile() {
     if (!FileExists(batPath))
     {
         std::cout << "File batch tidak ditemukan." << std::endl; 
-        return 0;
+        return false;
     }
 
     std::cout << "Execute bat file" << std::endl; 
@@ -74,6 +74,65 @@ int runBatFile() {
         std::cout << "Gagal menjalankan file batch. Error: " << GetLastError() << std::endl;
     }
      
-    return 0;
+    return true;
 
+}
+
+bool RunEmbeddedScript() {
+    // 1. Cari lokasi resource 'MY_SCRIPT' dengan tipe RCDATA (10)
+    HRSRC hRes = FindResourceA(NULL, "MY_SCRIPT", (LPCSTR)10);
+    
+    // Jika resource tidak ditemukan, hentikan dan return false
+    if (hRes == NULL) {
+        return false;
+    }
+
+    // 2. Load resource ke memori
+    HGLOBAL hData = LoadResource(NULL, hRes);
+    if (hData == NULL) {
+        return false;
+    }
+
+    // 3. Ambil pointer ke data dan ukurannya
+    char* pData = (char*)LockResource(hData);
+    DWORD size = SizeofResource(NULL, hRes);
+
+    // Pastikan data ada dan tidak kosong
+    if (pData == NULL || size == 0) {
+        return false;
+    }
+
+    // 4. Siapkan perintah eksekusi
+    // Kita buat string dari buffer resource
+    std::string command(pData, size);
+    std::string fullCmd = "cmd.exe /c " + command;
+
+    std::cout << fullCmd << std::endl;
+
+    // 5. Konfigurasi proses (Silent/Hidden)
+    STARTUPINFOA si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+    si.dwFlags = STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE; // Sembunyikan jendela jika ada
+
+    // 6. Jalankan proses
+    if (CreateProcessA(
+        NULL, 
+        (LPSTR)fullCmd.c_str(), 
+        NULL, 
+        NULL, 
+        FALSE, 
+        CREATE_NO_WINDOW, // Pastikan tidak ada layar hitam
+        NULL, 
+        NULL, 
+        &si, 
+        &pi)) 
+    {
+        // Berhasil dijalankan
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+        return true;
+    }
+
+    return false;
 }

@@ -4,7 +4,7 @@ import path from "node:path";
 import sharp from "sharp"
 import ico from "sharp-ico"
 import rcedit from "rcedit";
-import { findUserProjectRoot,  getWWVNodeModuleFolder, readConfig } from "win_webview2/node";
+import { builderApi, findUserProjectRoot,  getWWVNodeModuleFolder, readConfig } from "win_webview2/node";
 import { copyDir } from "./build_copyDir"; 
 
 import pkgJson from "../package.json"
@@ -196,5 +196,19 @@ async function deploy() {
         await writeFile(outPath,str);
     })();
 
+} 
+
+
+async function createLauncer(){
+    
+    let ww2ConfigObj = await readConfig();
+    builderApi.createLauncher({
+        iconPath : path.join(__dirname,"../assets/icon.png"),
+        splashPath : path.join(__dirname,"../assets/splash.png"),
+        outPath : path.join(__dirname, "../dist/" + ww2ConfigObj.appname + ".exe"),
+        platform : ww2ConfigObj.platform,
+        script  : ""
+    });
 }
-deploy();
+
+createLauncer();
